@@ -17,9 +17,11 @@
 
 * Python
 * FastAPI
-* aiohttp
 * SQLAlchemy
+* asyncio
+* aiohttp
 * unittest
+* environs
 
 ## Базы данных
 
@@ -31,3 +33,4 @@
 
 * Docker
 * CI CD
+* swagger

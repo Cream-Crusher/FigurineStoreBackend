@@ -1,5 +1,6 @@
-from sqlalchemy import exc
 import sqlalchemy.engine.url as SQURL
+
+from sqlalchemy import exc
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sessionmaker
 
 from database_service.app.config import Database

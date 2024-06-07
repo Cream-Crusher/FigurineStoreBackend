@@ -18,6 +18,7 @@
 * Python
 * FastAPI
 * SQLAlchemy
+* alembic
 * asyncio
 * aiohttp
 * unittest

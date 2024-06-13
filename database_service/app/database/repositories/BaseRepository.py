@@ -1,4 +1,4 @@
-from database_service.app.database.session import AsyncDatabase
+from app.database.session import AsyncDatabase
 from sqlalchemy.exc import IntegrityError, DBAPIError
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select

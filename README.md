@@ -26,7 +26,7 @@
 
 ## Базы данных
 
-* PostgreSQL
+* PostgreSQL + asyncpg
 * Redis
 * MongoDB
 

@@ -22,7 +22,7 @@ class Comments(Base):
     author = relationship('Users', back_populates='comments')
 
     post_id: Mapped[uuid.UUID] = mapped_column(ForeignKey('posts.id'), nullable=False)  # ondelete='CASCADE'
-    post = relationship('Users', back_populates='posts')
+    post = relationship('Posts', back_populates='comments')
 
     @classmethod
     def from_dto(cls, dto: CommentDTO) -> 'Comments':

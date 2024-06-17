@@ -2,31 +2,31 @@ from typing import Union
 
 from fastapi import APIRouter, HTTPException
 
-from app.api.v1.user.schemas.schemas_users import UpdateUserData
+from app.api.v1.user.schemas.schemas_users import UpdateUserData, UserRead
 from app.database.models.Users import Users
 from app.database.repositories.UserRepository import UserRep
 
 router = APIRouter(prefix='/api/v1/users', tags=['User|Users'])
 
 
-@router.get('/', response_model=Users)
-async def update_user_by_id(user_id: str, update_user: UpdateUserData) -> Union[Users, HTTPException]:
+@router.get('/', response_model=UserRead)
+async def update_user_by_id(user_id: str, update_user: UpdateUserData) -> Union[UserRead, HTTPException]:
     try:
         user = await UserRep.update(user_id, update_user)
 
         if user is None:
             return HTTPException(404, 'User not found')
 
-        return user
+        return UserRead(**user)
 
     except Exception as e:
         raise HTTPException(400, str(e))
 
 
-@router.get('/email/{email}', name='Get User By Email', response_model=Users)
-async def get_user_by_id(email: str) -> Union[Users, HTTPException]:
+@router.get('/email/{email}', name='Get User By Email', response_model=UserRead)
+async def get_user_by_id(email: str) -> Union[UserRead, HTTPException]:
     try:
-        user = await UserRep.get_user_by_phone(email)
+        user = await UserRep.get_user_by_email(email)
 
         if user is None:
             return HTTPException(404, 'User not found')
@@ -37,8 +37,8 @@ async def get_user_by_id(email: str) -> Union[Users, HTTPException]:
         raise HTTPException(400, str(e))
 
 
-@router.get('/phone/{phone}', name='Get User By Phone', response_model=Users)
-async def get_user_by_id(phone: str) -> Union[Users, HTTPException]:
+@router.get('/phone/{phone}', name='Get User By Phone', response_model=UserRead)
+async def get_user_by_id(phone: str) -> Union[UserRead, HTTPException]:
     try:
         user = await UserRep.get_user_by_phone(phone)
 
@@ -51,8 +51,8 @@ async def get_user_by_id(phone: str) -> Union[Users, HTTPException]:
         raise HTTPException(400, str(e))
 
 
-@router.get('/{user_id}', name='Get User By Id', response_model=Users)
-async def get_user_by_id(user_id: str) -> Union[Users, HTTPException]:
+@router.get('/{user_id}', name='Get User By Id', response_model=UserRead)
+async def get_user_by_id(user_id: str) -> Union[UserRead, HTTPException]:
     try:
         user = await UserRep.id(user_id)
 
@@ -66,7 +66,7 @@ async def get_user_by_id(user_id: str) -> Union[Users, HTTPException]:
 
 
 @router.get('/{user_id}', name='Delete User By Id')
-async def delete_user_by_id(user_id: str) -> Union[int, HTTPException]:
+async def delete_user_by_id(user_id: str):
     try:
         status = await UserRep.delete(user_id)
 

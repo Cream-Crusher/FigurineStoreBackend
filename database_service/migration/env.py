@@ -8,8 +8,8 @@ from sqlalchemy import pool
 from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
 
-from app.config import Database
-from app.database.models.BaseModel import Base
+from main.config import Database
+from main.database.models.BaseModel import Base
 
 
 # this is the Alembic Config object, which provides
@@ -27,12 +27,12 @@ if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
 # models for autogenerate
-from app.database.models.Blogs import Blogs
-from app.database.models.BlogsUsers import CompaniesUsers
-from app.database.models.Comments import Comments
-from app.database.models.Posts import Posts
-from app.database.models.tags import Tags
-from app.database.models.Users import Users
+from main.database.models.Blogs import Blogs
+from main.database.models.BlogsUsers import CompaniesUsers
+from main.database.models.Comments import Comments
+from main.database.models.Posts import Posts
+from main.database.models.tags import Tags
+from main.database.models.Users import Users
 
 target_metadata = Base.metadata
 

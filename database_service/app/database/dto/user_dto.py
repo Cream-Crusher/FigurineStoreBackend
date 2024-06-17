@@ -9,6 +9,7 @@ class UserDTO:
             fullname: str,
             username: str,
             phone: str,
+            email: str,
             is_admin: bool = None,
             is_superuser: bool = None,
             created_at: datetime = None,
@@ -19,6 +20,7 @@ class UserDTO:
         self.fullname = fullname
         self.username = username
         self.phone = phone
+        self.email = email
         self.is_admin = is_admin
         self.is_superuser = is_superuser
         self.created_at = created_at

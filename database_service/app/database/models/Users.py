@@ -18,6 +18,7 @@ class Users(Base):
     fullname: Mapped[str] = mapped_column(default=None, nullable=False)
     username: Mapped[str] = mapped_column(default=None, nullable=False)
     phone: Mapped[str] = mapped_column(default=None, nullable=False)
+    email: Mapped[str] = mapped_column(default=None, nullable=False)
     is_admin: Mapped[bool] = mapped_column(default=False, nullable=False)
     is_superuser: Mapped[bool] = mapped_column(default=False, nullable=False)
     created_at: Mapped[datetime] = mapped_column(default=datetime.utcnow, nullable=False)
@@ -35,6 +36,7 @@ class Users(Base):
             fullname=dto.fullname,
             username=dto.username,
             phone=dto.phone,
+            email=dto.email,
             is_admin=dto.is_admin,
             is_superuser=dto.is_superuser,
             created_at=dto.created_at,
@@ -48,6 +50,7 @@ class Users(Base):
             fullname=self.fullname,
             username=self.username,
             phone=self.phone,
+            email=self.email,
             is_admin=self.is_admin,
             is_superuser=self.is_superuser,
             created_at=self.created_at,

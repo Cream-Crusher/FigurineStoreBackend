@@ -31,7 +31,7 @@ class BaseRepository:
     model = None
 
     @session_handler
-    async def all(self, session):
+    async def all(self, session) -> object:
         result = await session.scalars(select(self.model).where(self.model.active.is_(True)))
         if not result:
             return []
@@ -44,7 +44,7 @@ class BaseRepository:
             return model
 
     @session_handler
-    async def create(self, session, data: dict):
+    async def create(self, session, data: dict) -> object:
         try:
             model = self.model(**data)
             session.add(model)
@@ -55,14 +55,14 @@ class BaseRepository:
             pass
 
     @session_handler
-    async def delete(self, session, model_id: str):
+    async def delete(self, session, model_id: str) -> int:
         model = await self.id(model_id)
         await session.delete(model)
         await session.commit()
         return 200
 
     @session_handler
-    async def update(self, session, model_id: str, update_data: dict):
+    async def update(self, session, model_id: str, update_data: dict) -> object:
         model = await self.id(model_id)
         for key, value in update_data.items():
             if value is not None:

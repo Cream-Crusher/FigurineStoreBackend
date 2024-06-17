@@ -5,6 +5,7 @@ from datetime import datetime
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
+from app.database.dto.blog_dto import BlogDTO
 from app.database.models.BaseModel import Base
 from app.database.models.BlogsUsers import CompaniesUsers
 
@@ -23,3 +24,25 @@ class Blogs(Base):
     owner = relationship('Users', back_populates='blogs')
 
     author = relationship('Users', secondary=CompaniesUsers.__tablename__, back_populates='blogs')
+
+    @classmethod
+    def from_dto(cls, dto: BlogDTO) -> 'Comments':
+        return cls(
+            title=dto.title,
+            description=dto.description,
+            created_at=dto.created_at,
+            updated_at=dto.updated_at,
+            active=dto.active,
+            owner_id=dto.owner_id,
+        )
+
+    def to_dto(self) -> BlogDTO:
+        return BlogDTO(
+            id=self.id,
+            title=self.title,
+            description=self.description,
+            created_at=self.created_at,
+            updated_at=self.updated_at,
+            active=self.active,
+            owner_id=self.owner_id,
+        )

@@ -5,6 +5,7 @@ from datetime import datetime
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
+from app.database.dto.comment_dto import CommentDTO
 from app.database.models.BaseModel import Base
 
 
@@ -22,3 +23,25 @@ class Comments(Base):
 
     post_id: Mapped[uuid.UUID] = mapped_column(ForeignKey('posts.id'), nullable=False)  # ondelete='CASCADE'
     post = relationship('Users', back_populates='posts')
+
+    @classmethod
+    def from_dto(cls, dto: CommentDTO) -> 'Comments':
+        return cls(
+            body=dto.body,
+            created_at=dto.created_at,
+            updated_at=dto.updated_at,
+            active=dto.active,
+            author_id=dto.author_id,
+            post_id=dto.post_id,
+        )
+
+    def to_dto(self) -> CommentDTO:
+        return CommentDTO(
+            id=self.id,
+            body=self.body,
+            created_at=self.created_at,
+            updated_at=self.updated_at,
+            active=self.active,
+            author_id=self.author_id,
+            post_id=self.post_id,
+        )

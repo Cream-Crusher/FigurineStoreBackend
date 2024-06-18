@@ -1,72 +1,74 @@
-from app.database.session import AsyncDatabase
-from sqlalchemy.exc import IntegrityError, DBAPIError
+from fastapi import HTTPException
+
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
+from sqlalchemy import select, ScalarResult
 
 from datetime import datetime
-
-from functools import wraps
-
-
-def session_handler(func):
-    @wraps(func)
-    async def wrapper(self, *args, **kwargs):
-        if "session" in kwargs:
-            session = kwargs["session"]
-        else:
-            session: AsyncSession = await AsyncDatabase.return_session()
-        try:
-            result = await func(self, session, *args, **kwargs)
-        except DBAPIError as e:
-            result = await func(self, session, *args, **kwargs)
-        finally:
-            if "session" not in kwargs:
-                await session.close()
-        return result
-
-    return wrapper
 
 
 class BaseRepository:
     model = None
 
-    @session_handler
-    async def all(self, session) -> object:
-        result = await session.scalars(select(self.model).where(self.model.active.is_(True)))
+    def __init__(self, session):
+        self.session: AsyncSession = session
+
+    async def all(self, paging=None):
+        query = select(self.model).where(self.model.active.is_(True))
+        query = query.offset(paging.skip).limit(paging.limit) if paging else query
+        result = await self.session.scalars(query)
         if not result:
             return []
         return result.all()
 
-    @session_handler
-    async def id(self, session, model_id: str) -> object:
-        model = await session.get(self.model, model_id)
+    async def id(self, model_id: str) -> object:
+        model = await self.session.get(self.model, model_id)
         if model is not None:
             return model
+        raise HTTPException(status_code=404, detail=f'object not found')
 
-    @session_handler
-    async def create(self, session, data: dict) -> object:
+    async def create(self, data: dict) -> object:
         try:
             model = self.model(**data)
-            session.add(model)
-            await session.commit()
-            await session.refresh(model)
+            self.session.add(model)
+            await self.session.commit()
+            await self.session.refresh(model)
             return model
         except IntegrityError as error:
-            pass
+            raise HTTPException(status_code=400, detail=f'{error}')
 
-    @session_handler
-    async def delete(self, session, model_id: str) -> int:
-        model = await self.id(model_id)
-        await session.delete(model)
-        await session.commit()
-        return 200
+    async def delete(self, model_id: str) -> int:
+        try:
+            model = await self.id(model_id)
+            if not model:
+                raise HTTPException(404, "not found")
+            await self.session.delete(model)
+            await self.session.commit()
+            return 200
+        except IntegrityError as error:
+            raise HTTPException(403, "There are links to other tables")
+        except Exception as error:
+            raise HTTPException(500, f"error")
 
-    @session_handler
-    async def update(self, session, model_id: str, update_data: dict) -> object:
+    async def update(self, model_id: str, update_data: dict) -> object:
         model = await self.id(model_id)
         for key, value in update_data.items():
             if value is not None:
-                setattr(model, key, value)
+                attr_value = getattr(model, key)
+                attr_value = attr_value.lower() if isinstance(attr_value, str) else attr_value
+                validate_value = value.lower() if isinstance(value, str) else value
+                if attr_value == validate_value:
+                    continue
+                else:
+                    setattr(model, key, value)
         model.updated_at = datetime.utcnow()
-        await session.commit()
+        await self.session.commit()
         return model
+
+    async def filter(self, query) -> ScalarResult:
+        result = await self.session.scalars(select(self.model).where(query))
+
+        if not result:
+            raise HTTPException(404, 'objects not found')
+
+        return result

@@ -23,10 +23,10 @@ class Blogs(Base):
     owner_id: Mapped[uuid.UUID] = mapped_column(ForeignKey('users.id'), nullable=False)  # ondelete='CASCADE'
     owner = relationship('Users', back_populates='blogs')
 
-    author = relationship('Users', secondary=CompaniesUsers.__tablename__, back_populates='blogs')
+    # author = relationship('Users', secondary=CompaniesUsers.__tablename__, back_populates='blogs')
 
     @classmethod
-    def from_dto(cls, dto: BlogDTO) -> 'Comments':
+    def from_dto(cls, dto: BlogDTO) -> 'Blogs':
         return cls(
             title=dto.title,
             description=dto.description,

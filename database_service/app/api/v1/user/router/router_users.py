@@ -1,79 +1,33 @@
-from typing import Union
+from typing import Optional
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter
 
-from app.api.v1.user.schemas.schemas_users import UpdateUserData, UserRead
-from app.database.models.Users import Users
-from app.database.repositories.UserRepository import UserRep
+from app.api.v1.user.schemas.schemas_users import UserRead, UserUpdate
+from app.database.repositories.UserRepository import user_repository
 
 router = APIRouter(prefix='/api/v1/users', tags=['User|Users'])
 
 
-@router.get('/', response_model=UserRead)
-async def update_user_by_id(user_id: str, update_user: UpdateUserData) -> Union[UserRead, HTTPException]:
-    try:
-        user = await UserRep.update(user_id, update_user)
-
-        if user is None:
-            return HTTPException(404, 'User not found')
-
-        return UserRead(**user)
-
-    except Exception as e:
-        raise HTTPException(400, str(e))
+@router.patch('/', response_model=Optional[UserRead])
+async def update_user_by_id(user: UserUpdate, user_id: str, users=user_repository):
+    return await users.update(user_id, user.__dict__)
 
 
-@router.get('/email/{email}', name='Get User By Email', response_model=UserRead)
-async def get_user_by_id(email: str) -> Union[UserRead, HTTPException]:
-    try:
-        user = await UserRep.get_user_by_email(email)
-
-        if user is None:
-            return HTTPException(404, 'User not found')
-
-        return user
-
-    except Exception as e:
-        raise HTTPException(400, str(e))
+@router.get('/email/{email}', name='Get User By Email', response_model=Optional[UserRead])
+async def get_user_by_id(email: str, users=user_repository):
+    return await users.get_user_by_email(email)
 
 
-@router.get('/phone/{phone}', name='Get User By Phone', response_model=UserRead)
-async def get_user_by_id(phone: str) -> Union[UserRead, HTTPException]:
-    try:
-        user = await UserRep.get_user_by_phone(phone)
-
-        if user is None:
-            return HTTPException(404, 'User not found')
-
-        return user
-
-    except Exception as e:
-        raise HTTPException(400, str(e))
+@router.get('/phone/{phone}', name='get user by phone', response_model=Optional[UserRead])
+async def user_by_phone(phone: str, users=user_repository):
+    return await users.get_user_by_phone(phone)
 
 
-@router.get('/{user_id}', name='Get User By Id', response_model=UserRead)
-async def get_user_by_id(user_id: str) -> Union[UserRead, HTTPException]:
-    try:
-        user = await UserRep.id(user_id)
-
-        if user is None:
-            return HTTPException(404, 'User not found')
-
-        return user
-
-    except Exception as e:
-        raise HTTPException(400, str(e))
+@router.get('/{user_id}', name='Get User By Id', response_model=Optional[UserRead])
+async def get_user_by_id(user_id: str, users=user_repository):
+    return await users.id(user_id)
 
 
-@router.get('/{user_id}', name='Delete User By Id')
-async def delete_user_by_id(user_id: str):
-    try:
-        status = await UserRep.delete(user_id)
-
-        if status is None:
-            return HTTPException(404, 'User not found')
-
-        return status
-
-    except Exception as e:
-        raise HTTPException(400, str(e))
+@router.delete('/{user_id}', name='Delete User By Id')
+async def delete_user_by_id(user_id: str, users=user_repository):
+    return await users.delete(user_id)

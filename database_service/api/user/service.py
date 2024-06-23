@@ -1,25 +1,24 @@
 from fastapi import HTTPException, Depends
 
 from sqlalchemy import func
-from sqlalchemy.testing.pickleable import User
 
-from api.user.model import Users
+from api.user.model import User
 from api.user.utils import check_phone
 from utils.base.session import AsyncDatabase
 from utils.base.BaseRepository import BaseRepository
 
 
 class UserService(BaseRepository):
-    model = Users
+    model = User
 
-    async def get(self, by: str, value: str | int):
+    async def get(self, by: str, value: str | int) -> User:
         match by:
             case 'email':
-                query = func.lower(Users.email) == value.lower()
+                query = func.lower(User.email) == value.lower()
             case 'username':
-                query = func.lower(Users.username) == value.lower()
+                query = func.lower(User.username) == value.lower()
             case 'phone':
-                query = func.lower(Users.phone) == value.lower()
+                query = func.lower(User.phone) == value.lower()
             case _:
                 raise HTTPException(404, detail=f'{by} not valid')
 

@@ -12,11 +12,11 @@ class AsyncDatabaseSessions:
 
         self.URL = SQURL.URL.create(
             drivername="postgresql+asyncpg",
-            username=db.user,
-            password=db.password,
-            host=db.host,
-            port=db.port,
-            database=db.database,
+            username=db.postgres_user,
+            password=db.postgres_password,
+            host=db.postgres_host,
+            port=db.postgres_port,
+            database=db.postgres_db,
         )
 
         self.engine = create_async_engine(self.URL, pool_size=50, max_overflow=-1)

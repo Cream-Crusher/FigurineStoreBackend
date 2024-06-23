@@ -8,7 +8,7 @@ from api.user.service import user_service
 router = APIRouter(prefix='/api/v1/users', tags=['User|Users'])
 
 
-@router.patch('/', response_model=Optional[UserRead])
+@router.patch('/', name='Update User By Id', response_model=Optional[UserRead])
 async def update_user_by_id(user: UserUpdate, user_id: str, users=user_service):
     return await users.update(user_id, user.__dict__)
 
@@ -18,7 +18,7 @@ async def get_user_by_id(email: str, users=user_service):
     return await users.get_user_by_email(email)
 
 
-@router.get('/phone/{phone}', name='get user by phone', response_model=Optional[UserRead])
+@router.get('/phone/{phone}', name='Get User By Phone', response_model=Optional[UserRead])
 async def user_by_phone(phone: str, users=user_service):
     return await users.get_user_by_phone(phone)
 

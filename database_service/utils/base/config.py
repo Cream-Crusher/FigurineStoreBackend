@@ -1,39 +1,47 @@
-from dataclasses import dataclass
-
-from environs import Env
 from pydantic import BaseModel
+from pydantic_settings import BaseSettings
+
+from dotenv import load_dotenv
 
 dev = True
-env_file = "deploy/env/dev.env" if dev else "deploy/env/.env"
+env_file = "deploy/env/dev.env" if dev else "deploy/env/prod.env"
 
-env = Env()
-env.read_env(env_file)
+load_dotenv(env_file)
 
 
-@dataclass
-class APISettings:
-    environment = env.str('ENVIRONMENT')
-    title = env.str('TITLE')
-    domain = env.str('DOMAIN')
-    docs_user = env.str('DOCS_USER')
-    docs_password = env.str('DOCS_PASSWORD')
+class APISettings(BaseSettings):
+    environment: str
+    title: str
+    domain: str
+    docs_user: str
+    docs_password: str
 
     class Config:
         env_prefix = "API_"
 
 
-@dataclass
-class DatabaseSettings:
-    host = env.str('POSTGRES_HOST'),
-    password = env.str('POSTGRES_PASSWORD'),
-    user = env.str('POSTGRES_USER'),
-    database = env.str('POSTGRES_DB'),
-    port = env.str('POSTGRES_PORT'),
-    # ssl_path: env.str('SSL_PATH')
-    url = f"postgresql+asyncpg://{env.str('POSTGRES_USER')}:{env.str('POSTGRES_PASSWORD')}@{env.str('POSTGRES_HOST')}:{env.str('POSTGRES_PORT')}/{env.str('POSTGRES_DB')}",
+class DatabaseSettings(BaseSettings):
+    postgres_port: int
+    postgres_host: str
+    postgres_db: str
+    postgres_user: str
+    postgres_password: str
+    # ssl_path: str
+
+    url: str = ""
 
     class Config:
         env_prefix = "DB_"
+
+    def __init__(self, **values):
+        super().__init__(**values)
+        self.url = self._assemble_database_url()
+
+    def _assemble_database_url(self):
+        ssl_part = "?ssl=verify-full" if not dev else ""
+        return (
+            f"postgresql+asyncpg://{self.postgres_user}:{self.postgres_password}@{self.postgres_host}:{self.postgres_port}/{self.postgres_db}{ssl_part}"
+        )
 
 
 class AppSettings(BaseModel):

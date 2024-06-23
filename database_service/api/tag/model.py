@@ -18,7 +18,7 @@ class Tags(Base):
     updated_at: Mapped[datetime] = mapped_column(default=datetime.utcnow, nullable=False)
     active: Mapped[bool] = mapped_column(default=True, nullable=False)
 
-    post = relationship('PostsTags', secondary=Posts.__tablename__, back_populates='posts')
+    # post = relationship('PostsTags', secondary=Posts.__tablename__, back_populates='posts')
 
 
 class PostsTags(Base):

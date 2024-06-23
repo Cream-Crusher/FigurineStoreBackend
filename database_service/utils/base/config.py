@@ -9,6 +9,13 @@ env_file = "deploy/env/dev.env" if dev else "deploy/env/prod.env"
 load_dotenv(env_file)
 
 
+class MickSettings(BaseSettings):
+    salt: str
+
+    class Config:
+        env_prefix = "MICK_"
+
+
 class APISettings(BaseSettings):
     environment: str
     title: str
@@ -47,6 +54,8 @@ class DatabaseSettings(BaseSettings):
 class AppSettings(BaseModel):
     database: DatabaseSettings = DatabaseSettings()
     api: APISettings = APISettings()
+    mick: MickSettings = MickSettings()
+
 
 
 settings = AppSettings()

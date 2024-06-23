@@ -1,11 +1,17 @@
-from typing import Optional
+from typing import Optional, List
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 
 from api.user.schema import UserRead, UserUpdate
 from api.user.service import user_service
+from utils.base.Pagination import Pagination
 
 router = APIRouter(prefix='/api/v1/users', tags=['User|Users'])
+
+
+@router.get('/', name='Get All User', response_model=List[UserRead])
+async def get_user_by_id(users=user_service,  paging=Depends(Pagination)):
+    return await users.all(paging)
 
 
 @router.patch('/', name='Update User By Id', response_model=Optional[UserRead])

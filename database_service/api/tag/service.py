@@ -1,3 +1,4 @@
+from utils.base.service import BaseRepository
 from api.tag.model import Tag
 
 

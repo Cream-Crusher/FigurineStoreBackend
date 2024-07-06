@@ -49,3 +49,8 @@ async def delete_user_by_id(user_id: str, users=user_service, me=Depends(get_me)
         raise HTTPException(403, "forbidden")
 
     return await users.delete(user_id)
+
+
+@router.get('/me', name='get me')
+async def current_user(user=Depends(get_me)):
+    return user

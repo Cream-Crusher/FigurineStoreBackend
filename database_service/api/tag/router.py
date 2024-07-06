@@ -1,0 +1,37 @@
+from http.client import HTTPException
+from typing import Optional, List
+
+from fastapi import APIRouter, Depends
+
+from api.tag.schema import TagCreate, TagRead, TagUpdate
+from api.tag.service import tag_service
+
+from utils.Auth.authentication import get_me
+from utils.base.pagination import Pagination
+
+router = APIRouter(prefix='/api/v1/tags', tags=['Tag|Tags'])
+
+
+@router.get('/', name='Get All Tag', response_model=List[TagRead])
+async def get_all_tags(tags=tag_service, paging=Depends(Pagination)):
+    return await tags.all(paging)
+
+
+@router.get('/{tag_id}', name='Get Tag By Id', response_model=TagRead)
+async def tag_by_id(tag_id: str, tags=tag_service, me=Depends(get_me)):
+    return await tags.id(tag_id)
+
+
+@router.post('/', name='Create Tag', response_model=TagRead)
+async def create_review(tag: TagCreate, tags=tag_service, me=Depends(get_me)):
+    return await tags.create(tag)
+
+
+@router.delete('/{tag_id}', name='Delete Tag By Id', response_model=200)
+async def del_tag(tag_id: str, tags=tag_service, me=Depends(get_me)):
+    return await tags.delete(tag_id)
+
+
+@users_router.patch('/', name='update user by id', response_model=TagRead)
+async def update_tag(tag_id: str, tag: TagUpdate, users=user_service, me=Depends(get_me)):
+    return await users.update(tag_id, tag.__dict__)

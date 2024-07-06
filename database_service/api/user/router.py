@@ -13,7 +13,7 @@ router = APIRouter(prefix='/api/v1/users', tags=['User|Users'])
 
 
 @router.get('/', name='Get All User', response_model=List[UserRead])
-async def get_user_by_id(users=user_service, me=Depends(get_me), paging=Depends(Pagination)):
+async def get_all_user(users=user_service, me=Depends(get_me), paging=Depends(Pagination)):
     if me.role not in ["admin"]:
         raise HTTPException(403, "forbidden")
 

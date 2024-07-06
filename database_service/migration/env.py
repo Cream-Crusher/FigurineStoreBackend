@@ -21,10 +21,10 @@ if config.config_file_name is not None:
 
 # Models start
 from api.user.model import User
-from api.post.model import Posts
-from api.tag.model import Tags, PostsTags
-from api.blog.model import Blogs, CompaniesUsers
-from api.comment.model import Comments
+from api.post.model import Post
+from api.tag.model import Tag, PostsTags
+from api.blog.model import Blog, CompaniesUsers
+from api.comment.model import Comment
 # Models end
 
 target_metadata = Base.metadata

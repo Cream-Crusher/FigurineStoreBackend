@@ -9,7 +9,7 @@ from api.tag.model import PostsTags
 from utils.base.BaseModel import Base
 
 
-class Posts(Base):
+class Post(Base):
     __tablename__ = 'posts'
 
     id: Mapped[uuid.UUID] = mapped_column(default=uuid.uuid4, primary_key=True, nullable=False)

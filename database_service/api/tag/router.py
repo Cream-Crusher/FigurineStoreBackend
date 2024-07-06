@@ -22,16 +22,25 @@ async def tag_by_id(tag_id: str, tags=tag_service, me=Depends(get_me)):
     return await tags.id(tag_id)
 
 
-@router.post('/', name='Create Tag', response_model=TagRead)
+@router.post('/', name='Create Tag', status_code=201)
 async def create_review(tag: TagCreate, tags=tag_service, me=Depends(get_me)):
-    return await tags.create(tag)
+    if me.role not in ["admin"]:
+        raise HTTPException(403, "forbidden")
+
+    return await tags.create(tag.__dict__)
 
 
-@router.delete('/{tag_id}', name='Delete Tag By Id', response_model=200)
+@router.delete('/{tag_id}', name='Delete Tag By Id')
 async def del_tag(tag_id: str, tags=tag_service, me=Depends(get_me)):
+    if me.role not in ["admin"]:
+        raise HTTPException(403, "forbidden")
+
     return await tags.delete(tag_id)
 
 
-@users_router.patch('/', name='update user by id', response_model=TagRead)
-async def update_tag(tag_id: str, tag: TagUpdate, users=user_service, me=Depends(get_me)):
-    return await users.update(tag_id, tag.__dict__)
+@router.patch('/', name='Update Tag By Id', response_model=TagRead)
+async def update_tag(tag_id: str, tag: TagUpdate, tags=tag_service, me=Depends(get_me)):
+    if me.role not in ["admin"]:
+        raise HTTPException(403, "forbidden")
+
+    return await tags.update(tag_id, tag.__dict__)

@@ -4,6 +4,9 @@ from starlette.middleware.cors import CORSMiddleware
 
 from api.user.auth_router import auth_router as auth_router
 from api.user.router import router as user_router
+
+from api.tag.router import router as tag_router
+
 from utils.Auth.DocsAuth import ApiDocBasicAuthMiddleware
 from utils.base.config import settings
 
@@ -34,6 +37,7 @@ app.add_middleware(CORSMiddleware, allow_origins=origins, allow_credentials=True
 
 app.include_router(user_router)
 app.include_router(auth_router)
+app.include_router(tag_router)
 
 router = APIRouter(prefix=f'/{service_title}/api', tags=[''])
 

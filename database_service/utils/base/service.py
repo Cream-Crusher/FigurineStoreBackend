@@ -48,7 +48,7 @@ class BaseRepository:
         except IntegrityError as error:
             raise HTTPException(403, "There are links to other tables")
         except Exception as error:
-            raise HTTPException(500, f"error")
+            raise HTTPException(500, f"{error}")
 
     async def update(self, model_id: str, update_data: dict) -> object:
         model = await self.id(model_id)

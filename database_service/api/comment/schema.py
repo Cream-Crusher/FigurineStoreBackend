@@ -17,12 +17,15 @@ class CommentBase(BaseModel):
 
 class CommentRead(CommentBase):
     id: uuid.UUID
+    author_id: uuid.UUID
+    post_id: uuid.UUID
     created_at: datetime
     updated_at: datetime
 
 
 class CommentCreate(CommentBase):
-    pass
+    author_id: uuid.UUID
+    post_id: uuid.UUID
 
 
 class CommentUpdate(CommentBase):

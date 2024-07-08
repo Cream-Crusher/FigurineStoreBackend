@@ -17,12 +17,13 @@ class BlogBase(BaseModel):
 
 class BlogRead(BlogBase):
     id: uuid.UUID
+    owner_id: uuid.UUID
     created_at: datetime
     updated_at: datetime
 
 
 class BlogCreate(BlogBase):
-    pass
+    owner_id: uuid.UUID
 
 
 class BlogUpdate(BlogBase):

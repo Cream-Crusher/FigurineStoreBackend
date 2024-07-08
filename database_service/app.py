@@ -36,11 +36,11 @@ app.add_middleware(CORSMiddleware, allow_origins=origins, allow_credentials=True
                    allow_headers=["*"], max_age=3600)
 
 app.include_router(user_router)
+app.include_router(blog_router)
 app.include_router(auth_router)
 app.include_router(tag_router)
 app.include_router(post_router)
 app.include_router(comment_router)
-app.include_router(blog_router)
 
 router = APIRouter(prefix=f'/{service_title}/api', tags=[''])
 

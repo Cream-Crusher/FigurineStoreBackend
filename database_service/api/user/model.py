@@ -7,7 +7,7 @@ from sqlalchemy.orm import Mapped, mapped_column
 from utils.base.BaseModel import Base
 
 
-class User(Base):
+class Users(Base):
     __tablename__ = 'users'
 
     id: Mapped[uuid.UUID] = mapped_column(default=uuid.uuid4, primary_key=True, nullable=False)
@@ -26,7 +26,7 @@ class User(Base):
     # owned_blogs = relationship(Blogs, back_populates='owner')
     # author_posts = relationship(Posts, back_populates='author')
     # comments = relationship(Comments, back_populates='user')
-    # blogs = relationship('Blogs', secondary=CompaniesUsers.__tablename__, back_populates='users')
+    # blogs = relationship('Blogs', secondary=BlogsUsers.__tablename__, back_populates='users')
 
     @staticmethod
     def verify_password(password, hashed_password):

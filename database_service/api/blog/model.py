@@ -1,21 +1,23 @@
 import uuid
 from datetime import datetime
+from typing import List
 
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
+from api.user.model import Users
 from utils.base.BaseModel import Base
 
 
-class CompaniesUsers(Base):
-    __tablename__ = 'companies_users'
+class BlogsUsers(Base):
+    __tablename__ = 'blogs_users'
     id: Mapped[uuid.UUID] = mapped_column(default=uuid.uuid4, primary_key=True, nullable=False)
 
     users_id: Mapped[uuid.UUID] = mapped_column(ForeignKey('users.id'), nullable=False)  # ondelete='SET NULL'
     blogs_id: Mapped[uuid.UUID] = mapped_column(ForeignKey('blogs.id'), nullable=False)  # ondelete='SET NULL'
 
 
-class Blog(Base):
+class Blogs(Base):
     __tablename__ = 'blogs'
 
     id: Mapped[uuid.UUID] = mapped_column(default=uuid.uuid4, primary_key=True, nullable=False)
@@ -26,6 +28,6 @@ class Blog(Base):
     active: Mapped[bool] = mapped_column(default=True, nullable=False)
 
     owner_id: Mapped[uuid.UUID] = mapped_column(ForeignKey('users.id'), nullable=False)  # ondelete='CASCADE'
-    owner = relationship('Users', back_populates='blogs')
+    owner: Mapped[Users] = relationship('Users', secondary="user_blogs", back_populates='blogs', uselist=False)
 
-    author = relationship('Users', secondary=CompaniesUsers.__tablename__, back_populates='blogs')
+    author: Mapped[List[Users]] = relationship('Users', secondary=BlogsUsers.__tablename__, back_populates='blogs', uselist=True)

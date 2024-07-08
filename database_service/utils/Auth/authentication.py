@@ -9,7 +9,7 @@ from fastapi.security import OAuth2PasswordBearer
 
 from sqlalchemy.future import select
 
-from api.user.model import User
+from api.user.model import Users
 from utils.base.config import settings
 from utils.base.session import AsyncDatabase
 
@@ -50,7 +50,7 @@ async def get_me(token: str = Depends(oauth2_scheme)):
     session = await AsyncDatabase.return_session()
 
     try:
-        query = await session.scalars(select(User).where(User.id == payload.get('user_id')))
+        query = await session.scalars(select(Users).where(Users.id == payload.get('user_id')))
         user = query.first()
 
         if user.active is False:

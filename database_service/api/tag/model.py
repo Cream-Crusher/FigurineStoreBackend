@@ -7,7 +7,7 @@ from sqlalchemy.orm import Mapped, mapped_column
 from utils.base.BaseModel import Base
 
 
-class Tag(Base):
+class Tags(Base):
     __tablename__ = 'tags'
 
     id: Mapped[uuid.UUID] = mapped_column(default=uuid.uuid4, primary_key=True, nullable=False)

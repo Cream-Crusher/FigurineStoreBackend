@@ -1,12 +1,12 @@
 from fastapi import Depends
 
-from api.post.model import Post
+from api.post.model import Posts
 from utils.base.service import BaseRepository
 from utils.base.session import AsyncDatabase
 
 
 class PostService(BaseRepository):
-    model = Post
+    model = Posts
 
 
 async def get_post_service(session=Depends(AsyncDatabase.get_session)):

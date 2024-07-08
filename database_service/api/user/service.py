@@ -5,7 +5,7 @@ from fastapi import HTTPException, Depends
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy import func
 
-from api.user.model import User
+from api.user.model import Users
 from api.user.utils import check_phone
 from utils.Auth.authentication import create_access_token, create_refresh_token
 from utils.base.service import BaseRepository
@@ -13,20 +13,20 @@ from utils.base.session import AsyncDatabase
 
 
 class UserService(BaseRepository):
-    model = User
+    model = Users
 
     @staticmethod
     async def password_validate(password: str) -> str:
         return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
 
-    async def get(self, by: str, value: str | int) -> User:
+    async def get(self, by: str, value: str | int) -> Users:
         match by:
             case 'email':
-                query = func.lower(User.email) == value.lower()
+                query = func.lower(Users.email) == value.lower()
             case 'username':
-                query = func.lower(User.username) == value.lower()
+                query = func.lower(Users.username) == value.lower()
             case 'phone':
-                query = func.lower(User.phone) == value.lower()
+                query = func.lower(Users.phone) == value.lower()
             case _:
                 raise HTTPException(404, detail=f'{by} not valid')
 
@@ -34,19 +34,19 @@ class UserService(BaseRepository):
 
         return result.first()
 
-    async def get_user_by_phone(self, phone: str) -> User:
+    async def get_user_by_phone(self, phone: str) -> Users:
         phone_number = check_phone(phone)
         return await self.get(by='phone', value=phone_number)
 
-    async def get_user_by_email(self, email: str) -> User:
+    async def get_user_by_email(self, email: str) -> Users:
         return await self.get(by='email', value=email)
 
-    async def get_user_by_username(self, username: str) -> User:
+    async def get_user_by_username(self, username: str) -> Users:
         return await self.get(by='username', value=username)
 
-    async def create_user(self, user_data: dict) -> User:
+    async def create_user(self, user_data: dict) -> Users:
         user_data['password'] = await self.password_validate(user_data['password'])
-        user = User(**user_data)
+        user = Users(**user_data)
         self.session.add(user)
         await self.session.commit()
         await self.session.refresh(user)

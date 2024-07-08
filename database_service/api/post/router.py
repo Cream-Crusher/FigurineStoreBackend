@@ -1,11 +1,10 @@
 from http.client import HTTPException
-from typing import Optional, List
+from typing import List
 
 from fastapi import APIRouter, Depends
 
 from api.post.schema import PostCreate, PostRead, PostUpdate
 from api.post.service import post_service
-
 from utils.Auth.authentication import get_me
 from utils.base.pagination import Pagination
 

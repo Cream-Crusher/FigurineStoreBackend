@@ -1,17 +1,15 @@
-import bcrypt
-
 from datetime import datetime
 
+import bcrypt
 from fastapi import HTTPException, Depends
 from fastapi.security import OAuth2PasswordRequestForm
-
 from sqlalchemy import func
 
 from api.user.model import User
 from api.user.utils import check_phone
 from utils.Auth.authentication import create_access_token, create_refresh_token
-from utils.base.session import AsyncDatabase
 from utils.base.service import BaseRepository
+from utils.base.session import AsyncDatabase
 
 
 class UserService(BaseRepository):

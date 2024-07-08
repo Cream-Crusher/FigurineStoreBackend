@@ -5,7 +5,6 @@ from fastapi import APIRouter, Depends
 
 from api.user.schema import UserRead, UserUpdate
 from api.user.service import user_service
-
 from utils.Auth.authentication import get_me
 from utils.base.pagination import Pagination
 

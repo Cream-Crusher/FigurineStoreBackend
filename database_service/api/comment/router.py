@@ -3,10 +3,9 @@ from typing import List
 
 from fastapi import APIRouter, Depends
 
+from api.comment.schema import CommentCreate
 from api.comment.schema import CommentRead, CommentUpdate
 from api.comment.service import comment_service
-from api.comment.schema import CommentCreate
-
 from utils.Auth.authentication import get_me
 from utils.base.pagination import Pagination
 

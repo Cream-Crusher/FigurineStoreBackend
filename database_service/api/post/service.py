@@ -1,6 +1,5 @@
 from fastapi import Depends
 
-
 from api.post.model import Post
 from utils.base.service import BaseRepository
 from utils.base.session import AsyncDatabase

@@ -1,12 +1,7 @@
 import uuid
-
-from dataclasses import dataclass
-
-from typing import Optional
-
 from datetime import datetime
 
-from pydantic import BaseModel, field_validator, Field, EmailStr
+from pydantic import BaseModel, Field
 
 
 class TagBase(BaseModel):

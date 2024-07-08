@@ -1,11 +1,10 @@
 from http.client import HTTPException
-from typing import Optional, List
+from typing import List
 
 from fastapi import APIRouter, Depends
 
 from api.tag.schema import TagCreate, TagRead, TagUpdate
 from api.tag.service import tag_service
-
 from utils.Auth.authentication import get_me
 from utils.base.pagination import Pagination
 

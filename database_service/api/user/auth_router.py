@@ -4,7 +4,6 @@ from starlette.responses import JSONResponse
 
 from api.user.schema import UserRead, UserCreate, UserAdminCreate
 from api.user.service import user_service
-
 from utils.Auth.authentication import get_me
 
 auth_router = APIRouter(prefix='/api/v1/auth', tags=['User|Authentication'])

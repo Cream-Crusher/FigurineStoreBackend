@@ -1,4 +1,4 @@
-from fastapi import HTTPException, Depends
+from fastapi import Depends
 
 from api.tag.model import Tag
 from utils.base.service import BaseRepository

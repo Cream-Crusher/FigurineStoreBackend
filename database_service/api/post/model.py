@@ -1,9 +1,12 @@
 import uuid
 from datetime import datetime
+from typing import List
 
 from sqlalchemy import ForeignKey
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
+from api.comment.model import Comments
+from api.tag.model import PostsTags, Tags
 from utils.base.BaseModel import Base
 
 
@@ -21,8 +24,8 @@ class Posts(Base):
     active: Mapped[bool] = mapped_column(default=True, nullable=False)
 
     author_id: Mapped[uuid.UUID] = mapped_column(ForeignKey('users.id'), nullable=False)  # ondelete='CASCADE'
-    # author = relationship('Users', back_populates='posts')
-    #
-    # comments = relationship('Comments', back_populates='posts')
-    #
-    # tags = relationship('PostsTags', secondary=PostsTags.__tablename__, back_populates='posts')
+    author: Mapped['Users'] = relationship('Users', back_populates='author_posts')
+
+    comments: Mapped[List[Comments]] = relationship('Comments', back_populates='post')
+
+    tags: Mapped[List[Tags]] = relationship('Tags', secondary=PostsTags.__tablename__)

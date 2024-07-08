@@ -1,12 +1,9 @@
 import uuid
 
-from dataclasses import dataclass
-
-from typing import Optional
 
 from datetime import datetime
 
-from pydantic import BaseModel, field_validator, Field, EmailStr
+from pydantic import BaseModel, Field
 
 
 class PostBase(BaseModel):
@@ -18,6 +15,7 @@ class PostBase(BaseModel):
 
 class PostRead(PostBase):
     id: uuid.UUID
+    author_id: uuid.UUID
     likes: int = Field(default=None)
     views: int = Field(default=None)
     created_at: datetime
@@ -26,6 +24,7 @@ class PostRead(PostBase):
 
 
 class PostCreate(PostBase):
+    author_id: uuid.UUID
     pass
 
 

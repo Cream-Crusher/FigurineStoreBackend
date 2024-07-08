@@ -23,7 +23,7 @@ async def tag_by_id(tag_id: str, tags=tag_service, me=Depends(get_me)):
 
 
 @router.post('/', name='Create Tag', status_code=201)
-async def create_review(tag: TagCreate, tags=tag_service, me=Depends(get_me)):
+async def create_tag(tag: TagCreate, tags=tag_service, me=Depends(get_me)):
     if me.role not in ["admin"]:
         raise HTTPException(403, "forbidden")
 

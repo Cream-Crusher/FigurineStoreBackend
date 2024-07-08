@@ -23,8 +23,8 @@ class Post(Base):
     active: Mapped[bool] = mapped_column(default=True, nullable=False)
 
     author_id: Mapped[uuid.UUID] = mapped_column(ForeignKey('users.id'), nullable=False)  # ondelete='CASCADE'
-    author = relationship('Users', back_populates='posts')
-
-    comments = relationship('Comments', back_populates='posts')
-
-    tags = relationship('PostsTags', secondary=PostsTags.__tablename__, back_populates='posts')
+    # author = relationship('Users', back_populates='posts')
+    #
+    # comments = relationship('Comments', back_populates='posts')
+    #
+    # tags = relationship('PostsTags', secondary=PostsTags.__tablename__, back_populates='posts')

@@ -45,7 +45,7 @@ class BaseServiceAPI:
             await self.close()
 
             return data
-
+ 
     async def get(self, url, params=None, cookie=None, with_base_url=True, add_headers=None):
         await self.init_session()
         api_url = f"{self.BASE_API}{url}" if with_base_url else url

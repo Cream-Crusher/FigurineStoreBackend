@@ -57,5 +57,4 @@ class AppSettings(BaseModel):
     mick: MickSettings = MickSettings()
 
 
-
 settings = AppSettings()

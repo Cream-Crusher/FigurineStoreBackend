@@ -39,7 +39,7 @@ async def get_user_by_email(email: str, users=user_service):
 
 
 @router.get('/phone/{phone}', name='Get User By Phone', response_model=Optional[UserRead])
-async def user_by_phone(phone: str, users=user_service):
+async def get_user_by_phone(phone: str, users=user_service):
     return await users.get_user_by_phone(phone)
 
 

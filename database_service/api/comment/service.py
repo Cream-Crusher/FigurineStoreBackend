@@ -1,4 +1,9 @@
+from fastapi import Depends
+
 from api.comment.model import Comments
+
+from utils.base.service import BaseRepository
+from utils.base.session import AsyncDatabase
 
 
 class CommentService(BaseRepository):

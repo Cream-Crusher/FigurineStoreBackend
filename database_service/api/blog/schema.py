@@ -6,7 +6,7 @@ from pydantic import BaseModel, Field
 
 class BlogBase(BaseModel):
     title: str = Field(default=None, max_length=250)
-    description: bool = Field(default=False)
+    description: str = Field(default=False)
     active: bool
 
 

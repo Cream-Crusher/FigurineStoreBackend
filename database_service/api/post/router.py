@@ -8,7 +8,7 @@ from api.post.service import post_service
 from utils.Auth.authentication import get_me
 from utils.base.pagination import Pagination
 
-router = APIRouter(prefix='/api/v1/post', tags=['Post|Posts'])
+router = APIRouter(prefix='/post', tags=['Post|Posts'])
 
 
 @router.get('/', name='Get All Post', response_model=List[PostRead])

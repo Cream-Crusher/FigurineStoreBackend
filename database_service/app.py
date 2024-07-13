@@ -35,14 +35,14 @@ app.add_middleware(ApiDocBasicAuthMiddleware)
 app.add_middleware(CORSMiddleware, allow_origins=origins, allow_credentials=True, allow_methods=["*", "OPTIONS"],
                    allow_headers=["*"], max_age=3600)
 
-app.include_router(user_router)
-app.include_router(blog_router)
-app.include_router(auth_router)
-app.include_router(tag_router)
-app.include_router(post_router)
-app.include_router(comment_router)
+router = APIRouter(prefix=f'/{service_title}/api/v1', tags=[''])
 
-router = APIRouter(prefix=f'/{service_title}/api', tags=[''])
+router.include_router(user_router)
+router.include_router(blog_router)
+router.include_router(auth_router)
+router.include_router(tag_router)
+router.include_router(post_router)
+router.include_router(comment_router)
 
 
 @router.get("/ping", tags=["Server"])
@@ -50,7 +50,7 @@ async def ping_server():
     return "pong"
 
 
-app.include_router(router, prefix='/api/v1')
+app.include_router(router)
 
 if __name__ == "__main__":
     uvicorn.run("app:app", host='0.0.0.0', port=8021, reload=True)

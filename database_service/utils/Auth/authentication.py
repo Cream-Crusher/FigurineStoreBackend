@@ -13,7 +13,7 @@ from api.user.model import Users
 from utils.base.config import settings
 from utils.base.session import AsyncDatabase
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl=f"/api/v1/auth/login", scheme_name="JWT")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/database/api/v1/auth/login", scheme_name="JWT")
 KEY = settings.mick.salt
 ALGORITHM = "HS256"
 

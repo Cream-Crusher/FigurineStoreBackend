@@ -8,7 +8,7 @@ from api.tag.service import tag_service
 from utils.Auth.authentication import get_me
 from utils.base.pagination import Pagination
 
-router = APIRouter(prefix='/api/v1/tags', tags=['Tag|Tags'])
+router = APIRouter(prefix='/tags', tags=['Tag|Tags'])
 
 
 @router.get('/', name='Get All Tag', response_model=List[TagRead])

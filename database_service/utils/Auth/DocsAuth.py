@@ -11,7 +11,7 @@ from utils.base.config import settings
 class ApiDocBasicAuthMiddleware(BaseHTTPMiddleware):
 
     async def dispatch(self, request: Request, call_next: RequestResponseEndpoint):
-        if request.url.path in ['/api/v1/auth/login']:
+        if request.url.path in ['/database/api/v1/auth/login']:
             auth_header = request.headers.get('Authorization')
             if auth_header:
                 try:

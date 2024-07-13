@@ -9,7 +9,7 @@ from api.comment.service import comment_service
 from utils.Auth.authentication import get_me
 from utils.base.pagination import Pagination
 
-router = APIRouter(prefix='/api/v1/comment', tags=['Comment|Comments'])
+router = APIRouter(prefix='/comment', tags=['Comment|Comments'])
 
 
 @router.get('/', name='Get All Comment', response_model=List[CommentRead])

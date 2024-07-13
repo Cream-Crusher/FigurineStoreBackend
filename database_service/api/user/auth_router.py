@@ -6,7 +6,7 @@ from api.user.schema import UserRead, UserCreate, UserAdminCreate
 from api.user.service import user_service
 from utils.Auth.authentication import get_me
 
-auth_router = APIRouter(prefix='/api/v1/auth', tags=['User|Authentication'])
+auth_router = APIRouter(prefix='/auth', tags=['User|Authentication'])
 
 
 @auth_router.post('/register', name='Register User', response_model=UserRead, status_code=201)

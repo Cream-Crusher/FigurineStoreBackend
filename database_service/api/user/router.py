@@ -8,7 +8,7 @@ from api.user.service import user_service
 from utils.Auth.authentication import get_me
 from utils.base.pagination import Pagination
 
-router = APIRouter(prefix='/api/v1/users', tags=['User|Users'])
+router = APIRouter(prefix='/users', tags=['User|Users'])
 
 
 @router.get('/', name='Get All User', response_model=List[UserRead])

@@ -8,7 +8,7 @@ from api.blog.service import blog_service
 from utils.Auth.authentication import get_me
 from utils.base.pagination import Pagination
 
-router = APIRouter(prefix='/api/v1/blog', tags=['Blog|Blogs'])
+router = APIRouter(prefix='/blog', tags=['Blog|Blogs'])
 
 
 @router.get('/', name='Get All Blog', response_model=List[BlogRead])

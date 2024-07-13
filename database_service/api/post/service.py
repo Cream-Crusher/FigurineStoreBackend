@@ -12,6 +12,15 @@ from utils.base.session import AsyncDatabase
 class PostService(BaseRepository):
     model = Posts
 
+    async def create_post(self, post: dict) -> object:
+        post = post.__dict__
+
+        if post['tags'] is None:
+            post.pop('tags')
+            return await self.create(post)
+        else:
+            return await self.create_posts_with_tag(post)
+
     async def create_posts_with_tag(self, post: dict) -> object:
         tags_ids = copy.deepcopy(post['tags'])
         post.pop('tags')

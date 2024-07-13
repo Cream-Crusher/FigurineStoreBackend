@@ -1,7 +1,12 @@
 import uuid
 from datetime import datetime
+from typing import List, Optional, Union
 
 from pydantic import BaseModel, Field
+
+
+class Tag(BaseModel):
+    tag_name: Optional[str]
 
 
 class PostBase(BaseModel):
@@ -14,6 +19,8 @@ class PostBase(BaseModel):
 class PostRead(PostBase):
     id: uuid.UUID
     author_id: uuid.UUID
+    blog_id: uuid.UUID
+    tags: List[Tag]
     likes: int = Field(default=None)
     views: int = Field(default=None)
     created_at: datetime
@@ -23,8 +30,9 @@ class PostRead(PostBase):
 
 class PostCreate(PostBase):
     author_id: uuid.UUID
-    pass
+    blog_id: uuid.UUID
+    tags: Optional[List[uuid.UUID]] = Field(default=None)
 
 
 class PostUpdate(PostBase):
-    pass
+    tags: Optional[List[uuid.UUID]] = Field(default=None)

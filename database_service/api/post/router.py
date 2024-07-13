@@ -26,7 +26,13 @@ async def create_post(post: PostCreate, posts=post_service, me=Depends(get_me)):
     if me.role not in ["admin"]:
         raise HTTPException(403, "forbidden")
 
-    return await posts.create(post.__dict__)
+    post = post.__dict__
+
+    if post['tags'] is None:
+        post.pop('tags')
+        return await posts.create(post)
+    else:
+        return await posts.create_posts_with_tag(post)
 
 
 @router.delete('/{post_id}', name='Delete Post By Id')

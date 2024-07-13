@@ -6,8 +6,16 @@ from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from api.comment.model import Comments
-from api.tag.model import PostsTags, Tags
+from api.tag.model import Tags
 from utils.base.BaseModel import Base
+
+
+class PostsTags(Base):
+    __tablename__ = 'posts_tags'
+    id: Mapped[uuid.UUID] = mapped_column(default=uuid.uuid4, primary_key=True, nullable=False)
+
+    post_id: Mapped[uuid.UUID] = mapped_column(ForeignKey('posts.id'), nullable=False)  # ondelete='SET NULL'
+    tag_id: Mapped[uuid.UUID] = mapped_column(ForeignKey('tags.id'), nullable=False)  # ondelete='SET NULL'
 
 
 class Posts(Base):
@@ -26,6 +34,9 @@ class Posts(Base):
     author_id: Mapped[uuid.UUID] = mapped_column(ForeignKey('users.id'), nullable=False)  # ondelete='CASCADE'
     author: Mapped['Users'] = relationship('Users', back_populates='author_posts')
 
+    blog_id: Mapped[uuid.UUID] = mapped_column(ForeignKey('blogs.id'), nullable=True)  # ondelete='CASCADE'
+    blog: Mapped['Blogs'] = relationship('Blogs', back_populates='blog_posts')
+
     comments: Mapped[List[Comments]] = relationship('Comments', back_populates='post')
 
-    tags: Mapped[List[Tags]] = relationship('Tags', secondary=PostsTags.__tablename__)
+    tags: Mapped[List[Tags]] = relationship("Tags", secondary=PostsTags.__tablename__, back_populates="posts", uselist=True, lazy='selectin')

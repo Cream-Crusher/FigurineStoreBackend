@@ -21,8 +21,8 @@ if config.config_file_name is not None:
 
 # Models start
 from api.user.model import Users
-from api.post.model import Posts
-from api.tag.model import Tags, PostsTags
+from api.post.model import Posts, PostsTags
+from api.tag.model import Tags
 from api.blog.model import Blogs, BlogsUsers
 from api.comment.model import Comments
 # Models end

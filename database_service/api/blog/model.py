@@ -5,6 +5,7 @@ from typing import List
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
+from api.post.model import Posts
 from utils.base.BaseModel import Base
 
 
@@ -28,5 +29,7 @@ class Blogs(Base):
 
     owner_id: Mapped[uuid.UUID] = mapped_column(ForeignKey('users.id'), nullable=False)  # ondelete='CASCADE'
     owner: Mapped['Users'] = relationship('Users', back_populates='owned_blogs', uselist=False)
+
+    blog_posts: Mapped[List[Posts]] = relationship('Posts', back_populates='blog')
 
     author: Mapped[List['Users']] = relationship('Users', secondary='blogs_users', back_populates='blogs', uselist=True)

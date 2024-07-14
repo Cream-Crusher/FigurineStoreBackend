@@ -1,7 +1,6 @@
-from http.client import HTTPException
 from typing import List
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 
 from api.comment.schema import CommentCreate
 from api.comment.schema import CommentRead, CommentUpdate

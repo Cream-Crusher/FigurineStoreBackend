@@ -31,7 +31,7 @@ class PostRead(PostBase):
 class PostCreate(PostBase):
     author_id: uuid.UUID
     blog_id: uuid.UUID
-    tags: Optional[List[uuid.UUID]] = Field(default=None)
+    tags_ids: Optional[List[uuid.UUID]] = Field(default=None)
 
 
 class PostUpdate(PostBase):

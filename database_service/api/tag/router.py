@@ -1,7 +1,6 @@
-from http.client import HTTPException
 from typing import List
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 
 from api.tag.schema import TagCreate, TagRead, TagUpdate
 from api.tag.service import tag_service

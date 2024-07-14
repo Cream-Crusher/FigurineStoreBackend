@@ -35,4 +35,4 @@ class PostCreate(PostBase):
 
 
 class PostUpdate(PostBase):
-    tags: Optional[List[uuid.UUID]] = Field(default=None)
+    tags_ids: Optional[List[uuid.UUID]] = Field(default=None)

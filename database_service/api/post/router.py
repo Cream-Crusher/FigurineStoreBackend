@@ -39,10 +39,10 @@ async def del_post(post_id: str, posts=post_service, me=Depends(get_me)):
 
 
 @router.patch('/', name='Update Post By Id', response_model=PostUpdate, status_code=200)
-async def update_post(post_id: str, posts=post_service, me=Depends(get_me)):
-    post = await posts.id(post_id)
+async def update_post(post_id: str, post: PostUpdate, posts=post_service, me=Depends(get_me)):
+    author_id = (await posts.id(post_id)).author_id
 
-    if not (me.role in ["admin"] or post.author_id == me.id):
+    if not (me.role in ["admin"] or author_id == me.id):
         raise HTTPException(403, "forbidden")
 
-    return await posts.update(post_id, post.__dict__)
+    return await posts.update_post(post_id, post.__dict__)

@@ -23,7 +23,7 @@ async def comment_by_id(comment_id: str, comments=comment_service, me=Depends(ge
 
 @router.post('/', name='Create Comment', status_code=201)
 async def create_comment(comment: CommentCreate, comments=comment_service, me=Depends(get_me)):
-    if me.role not in ["admin"]:
+    if me.role not in ["admin", "user"]:
         raise HTTPException(403, "forbidden")
 
     return await comments.create(comment.__dict__)
@@ -31,15 +31,19 @@ async def create_comment(comment: CommentCreate, comments=comment_service, me=De
 
 @router.delete('/{comment_id}', name='Delete Comment By Id')
 async def del_comment(comment_id: str, comments=comment_service, me=Depends(get_me)):
-    if me.role not in ["admin"]:
+    comment_author_id = (await comments.id(comment_id)).author_id
+
+    if not (me.role in ["admin"] or comment_author_id == me.id):
         raise HTTPException(403, "forbidden")
 
     return await comments.delete(comment_id)
 
 
 @router.patch('/', name='Update Comment By Id', response_model=CommentRead)
-async def update_comment(comment_id: str, comment: CommentUpdate, vcomments=comment_service, me=Depends(get_me)):
-    if me.role not in ["admin"]:
+async def update_comment(comment_id: str, comment: CommentUpdate, comments=comment_service, me=Depends(get_me)):
+    comment_author_id = (await comments.id(comment_id)).author_id
+
+    if not (me.role in ["admin"] or comment_author_id == me.id):
         raise HTTPException(403, "forbidden")
 
-    return await vcomments.update(comment_id, comment.__dict__)
+    return await comments.update(comment_id, comment.__dict__)

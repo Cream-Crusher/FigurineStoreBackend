@@ -25,7 +25,7 @@ async def current_user(user=Depends(get_me)):
 
 @router.patch('/', name='Update User By Id', response_model=Optional[UserRead])
 async def update_user_by_id(user: UserUpdate, user_id: str, users=user_service, me=Depends(get_me)):
-    if me.role not in ["admin"]:
+    if not (me.role in ["admin"] or user_id == me.id):
         raise HTTPException(403, "forbidden")
 
     return await users.update(user_id, user.__dict__)

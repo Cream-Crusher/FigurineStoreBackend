@@ -21,13 +21,13 @@ class BaseRepository:
             return []
         return result.all()
 
-    async def id(self, model_id: str) -> object:
+    async def id(self, model_id: str) -> model:
         model = await self.session.get(self.model, model_id)
         if model is not None:
             return model
         raise HTTPException(status_code=404, detail=f'object not found')
 
-    async def create(self, data: dict) -> object:
+    async def create(self, data: dict) -> model:
         try:
             model = self.model(**data)
             self.session.add(model)
@@ -50,7 +50,7 @@ class BaseRepository:
         except Exception as error:
             raise HTTPException(500, f"{error}")
 
-    async def update(self, model_id: str, update_data: dict) -> object:
+    async def update(self, model_id: str, update_data: dict) -> model:
         model = await self.id(model_id)
         for key, value in update_data.items():
             if value is not None:

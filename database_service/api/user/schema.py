@@ -1,17 +1,10 @@
 import uuid
-from dataclasses import dataclass
 from datetime import datetime
 from typing import Optional
 
 from pydantic import BaseModel, field_validator, Field, EmailStr
 
 from api.user.utils import check_phone
-
-
-@dataclass
-class Roles:
-    user = "user"
-    employee = "employee"
 
 
 class UserBase(BaseModel):
@@ -40,20 +33,6 @@ class UserRead(UserBase):
     updated_at: Optional[datetime]
     latest_auth: Optional[datetime] = None
     active: Optional[bool]
-
-
-class UserCreate(UserBase):
-    role: Roles
-    password: str = Field(max_length=40)
-    active: Optional[bool]
-
-    @field_validator("role")
-    def validate_role(cls, role):
-        return role.value
-
-
-class UserAdminCreate(UserBase):
-    password: str = Field(max_length=40)
 
 
 class UserUpdate(UserBase):

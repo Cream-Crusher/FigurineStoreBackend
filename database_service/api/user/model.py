@@ -2,7 +2,6 @@ import uuid
 from datetime import datetime
 from typing import List
 
-import bcrypt
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from api.blog.model import BlogsUsers, Blogs
@@ -32,11 +31,3 @@ class Users(Base):
     comments: Mapped[List[Posts]] = relationship(Comments, back_populates='author')
 
     blogs = relationship(Blogs, secondary=BlogsUsers.__tablename__, back_populates='author')
-
-    @staticmethod
-    def verify_password(password, hashed_password):
-        return bcrypt.checkpw(password.encode('utf-8'), hashed_password.encode('utf-8'))
-
-    @staticmethod
-    def hash_password(password):
-        return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')

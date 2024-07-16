@@ -9,19 +9,22 @@ env_file = "deploy/env/dev.env" if dev else "deploy/env/prod.env"
 load_dotenv(env_file)
 
 
-class MickSettings(BaseSettings):
+class OAuth2Settings(BaseSettings):
+    token_url: str
+    scheme_name: str
+    algorithm: str
     salt: str
 
     class Config:
-        env_prefix = "MICK_"
+        env_prefix = "OAUTHTWO_"
 
 
 class APISettings(BaseSettings):
     environment: str
     title: str
     domain: str
-    docs_user: str
-    docs_password: str
+    docs_user: str  # отключил мидлвейры
+    docs_password: str  # отключил мидлвейры
 
     class Config:
         env_prefix = "API_"
@@ -54,7 +57,7 @@ class DatabaseSettings(BaseSettings):
 class AppSettings(BaseModel):
     database: DatabaseSettings = DatabaseSettings()
     api: APISettings = APISettings()
-    mick: MickSettings = MickSettings()
+    OAuth2: OAuth2Settings = OAuth2Settings()
 
 
 settings = AppSettings()

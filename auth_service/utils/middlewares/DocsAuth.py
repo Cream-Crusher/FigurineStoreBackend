@@ -19,6 +19,7 @@ class ApiDocBasicAuthMiddleware(BaseHTTPMiddleware):
                     if scheme.lower() == 'basic':
                         decoded = base64.b64decode(credentials).decode('ascii')
                         username, password = decoded.split(':')
+                        print(username)
                         correct_username = settings.api.docs_user == username
                         correct_password = settings.api.docs_password == password
 
@@ -26,7 +27,6 @@ class ApiDocBasicAuthMiddleware(BaseHTTPMiddleware):
                             return await call_next(request)
                 except Exception:
                     raise HTTPException(401, "Unauthorized")
-
             response = Response(content='Unauthorized', status_code=401)
             response.headers['WWW-Authenticate'] = 'Basic'
             return response

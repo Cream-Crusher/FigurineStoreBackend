@@ -1,12 +1,10 @@
 import jose
-
 from jose import jwt
 
 from datetime import datetime, timedelta
 
 from fastapi import Depends, HTTPException
 from fastapi.security import OAuth2PasswordBearer
-
 from sqlalchemy.future import select
 
 from api.user_auth.model import Users

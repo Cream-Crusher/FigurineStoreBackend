@@ -1,10 +1,9 @@
-from fastapi import HTTPException
+from datetime import datetime
 
+from fastapi import HTTPException
+from sqlalchemy import select, ScalarResult
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, ScalarResult
-
-from datetime import datetime
 
 
 class BaseRepository:

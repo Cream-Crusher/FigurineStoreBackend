@@ -1,7 +1,8 @@
 import uuid
+import bcrypt
+
 from datetime import datetime
 
-import bcrypt
 from sqlalchemy.orm import Mapped, mapped_column
 
 from utils.base.BaseModel import Base

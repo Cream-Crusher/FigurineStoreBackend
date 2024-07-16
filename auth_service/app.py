@@ -26,7 +26,7 @@ if settings.api.environment == 'prod':
 else:
     origins = ["http://localhost"]
 
-app.add_middleware(ApiDocBasicAuthMiddleware)
+# app.add_middleware(ApiDocBasicAuthMiddleware)
 app.add_middleware(CORSMiddleware, allow_origins=origins, allow_credentials=True, allow_methods=["*", "OPTIONS"],
                    allow_headers=["*"], max_age=3600)
 

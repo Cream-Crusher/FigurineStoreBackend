@@ -1,7 +1,6 @@
+from dotenv import load_dotenv
 from pydantic import BaseModel
 from pydantic_settings import BaseSettings
-
-from dotenv import load_dotenv
 
 dev = True
 env_file = "deploy/env/dev.env" if dev else "deploy/env/prod.env"

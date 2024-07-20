@@ -1,0 +1,12 @@
+services:
+  auth_service:
+    image: auth_service
+    build:
+      context: .
+      dockerfile: services/auth_service/deploy/Dockerfile
+
+  database_service:
+    image: database_service
+    build:
+      context: .
+      dockerfile: services/database_service/deploy/Dockerfile

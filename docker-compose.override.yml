@@ -1,0 +1,21 @@
+services:
+  auth_service:
+    env_file:
+      - services/auth_service/deploy/env/dev.env
+    ports:
+      - "8000:8000"
+    networks:
+      - traefik-proxy
+
+  database_service:
+    env_file:
+      - services/database_service/deploy/env/dev.env
+    ports:
+      - "8001:8001"
+    networks:
+      - traefik-proxy
+
+networks:
+  traefik-proxy:
+    name: traefik-proxy
+    external: true

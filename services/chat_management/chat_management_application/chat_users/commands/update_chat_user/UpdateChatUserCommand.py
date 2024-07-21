@@ -1,9 +1,10 @@
+from dataclasses import dataclass, field
 from datetime import datetime
 
 
+@dataclass
 class UpdateChatUserCommand:
-    def __init__(self):
-        self.username: str
+    username: str
 
-        self.last_visit: datetime
-        self.is_onlain: bool | None
+    last_visit: datetime = field(default=None)
+    is_onlain: bool = field(default=None)

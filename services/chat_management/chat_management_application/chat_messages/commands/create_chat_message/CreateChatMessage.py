@@ -1,7 +1,8 @@
+from dataclasses import dataclass
+
 from services.chat_management.chat_management_core.entities.chat_message.ChatMessage import ChatMessage
 
 
+@dataclass
 class CreateChatMessage:
-
-    def __init__(self):
-        self.chat_message = ChatMessage
+    chat_message = ChatMessage

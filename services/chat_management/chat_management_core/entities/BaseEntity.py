@@ -1,10 +1,10 @@
 import uuid
+from dataclasses import dataclass
 from datetime import datetime
 
 
+@dataclass
 class BaseEntity:
-
-    def __init__(self):
-        self.id: uuid.UUID
-        self.created_at: datetime
-        self.updated_at: datetime
+    id: uuid.UUID
+    created_at: datetime
+    updated_at: datetime

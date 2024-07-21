@@ -1,11 +1,11 @@
 import uuid
+from dataclasses import dataclass
 
 from services.chat_management.chat_management_core.entities.BaseEntity import BaseEntity
 
 
+@dataclass
 class ChatMessage(BaseEntity):
-    def __init__(self):
-        super().__init__()
-        self.message_text: str
-        self.chat_id: uuid.UUID
-        self.user_id: uuid.UUID
+    message_text: str
+    chat_id: uuid.UUID
+    user_id: uuid.UUID

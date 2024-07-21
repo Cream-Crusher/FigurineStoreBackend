@@ -2,7 +2,7 @@ import uuid
 from dataclasses import dataclass, field
 from typing import List
 
-from services.chat_management.chat_management_core.entities.BaseEntity import BaseEntity
+from services.chat_service.chat_management_core.entities.BaseEntity import BaseEntity
 
 
 @dataclass

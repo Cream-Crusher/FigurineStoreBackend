@@ -3,7 +3,6 @@ from fastapi import FastAPI, APIRouter
 from starlette.middleware.cors import CORSMiddleware
 
 from api.user_auth.auth_router import auth_router as auth_router
-from utils.middlewares.DocsAuth import ApiDocBasicAuthMiddleware
 from utils.base.config import settings
 
 service_title = settings.api.title

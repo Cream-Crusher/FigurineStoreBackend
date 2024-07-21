@@ -1,15 +1,38 @@
 services:
-  auth_service:
+
+  dbpostgres:
+    env_file:
+      - services/database_service/deploy/env/dev.env
+    restart: always
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 10s
+    ports:
+      - "5432:5432"
+    networks:
+      - traefik-proxy
+
+    volumes:
+      - /var/lib/postgresql/data/pgdata
+
+  auth_wab_api:
     env_file:
       - services/auth_service/deploy/env/dev.env
+    depends_on:
+      - dbpostgres
     ports:
       - "8000:8000"
     networks:
       - traefik-proxy
 
-  database_service:
+  database_wab_api:
     env_file:
       - services/database_service/deploy/env/dev.env
+    depends_on:
+      - dbpostgres
     ports:
       - "8001:8001"
     networks:

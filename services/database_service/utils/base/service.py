@@ -17,6 +17,7 @@ class BaseRepository:
         query = select(self.model).where(self.model.active.is_(True))
         query = query.offset(paging.skip).limit(paging.limit) if paging else query
         result = await self.session.scalars(query)
+
         if not result:
             return []
         return result.all()

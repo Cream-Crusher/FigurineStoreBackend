@@ -27,7 +27,7 @@ if settings.api.environment == 'prod':
     origins = ['https://title_company.database.ru']
 
 else:
-    origins = ["localhost", "127.0.0.1", "0.0.0.0"]
+    origins = ["*"]
 
 # app.add_middleware(ApiDocBasicAuthMiddleware)
 app.add_middleware(CORSMiddleware, allow_origins=origins, allow_credentials=True, allow_methods=["*", "OPTIONS"],

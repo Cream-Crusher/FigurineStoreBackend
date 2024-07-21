@@ -1,12 +1,22 @@
 services:
-  auth_service:
-    image: auth_service
+  dbpostgres:
+    image: postgres:latest
+    container_name: postgres
+
+  cache:
+    image: redis
+
+  auth_wab_api:
+    image: auth_wab_api
     build:
       context: .
       dockerfile: services/auth_service/deploy/Dockerfile
 
-  database_service:
-    image: database_service
+  database_wab_api:
+    image: database_wab_api
     build:
       context: .
       dockerfile: services/database_service/deploy/Dockerfile
+
+volumes:
+  postgres_data:

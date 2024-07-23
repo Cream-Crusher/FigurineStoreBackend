@@ -4,7 +4,7 @@ from datetime import datetime
 
 from fastapi import HTTPException, Depends
 from fastapi.security import OAuth2PasswordRequestForm
-from sqlalchemy import func
+from sqlalchemy import func, update
 
 from api.user_auth.model import Users
 from utils.Auth.authentication import create_access_token, create_refresh_token
@@ -66,6 +66,12 @@ class UserService(BaseRepository):
         await self.session.commit()
 
         return {"access_token": access_token, "refresh_token": refresh_token, "token_type": "bearer"}
+
+    async def delete_refresh_token(self, user_id: str):
+        user = await self.session.get(Users, user_id)
+        user.refresh_token = ''
+
+        await self.session.commit()
 
 
 async def get_user_service(session=Depends(AsyncDatabase.get_session)):

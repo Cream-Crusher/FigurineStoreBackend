@@ -18,11 +18,33 @@ services:
     volumes:
       - /var/lib/postgresql/data/pgdata
 
+  rabbitmq:
+    hostname: rabbitmq
+    restart: always
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 30s
+      timeout: 30s
+      retries: 3
+    volumes:
+      - ./rabbitmq/:/rabbitmq/
+      - ./rabbitmq:/var/lib/rabbitmq
+    ports:
+      - 15672:15672
+      - 5672:5672
+    env_file:
+      - docker_config/rabbitmq/env/dev.env
+    environment:
+      - RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS=-rabbit log_levels [{connection,error},{default,error}] disk_free_limit 2147483648
+    networks:
+      - traefik-proxy
+
   auth_wab_api:
     env_file:
       - services/auth_service/deploy/env/dev.env
     depends_on:
       - dbpostgres
+      - rabbitmq
     ports:
       - "8000:8000"
     networks:
@@ -33,6 +55,7 @@ services:
       - services/database_service/deploy/env/dev.env
     depends_on:
       - dbpostgres
+      - rabbitmq
     ports:
       - "8001:8001"
     networks:

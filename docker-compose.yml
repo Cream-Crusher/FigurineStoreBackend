@@ -6,6 +6,9 @@ services:
   cache:
     image: redis
 
+  rabbitmq:
+    image: rabbitmq:3.10.7-management
+
   auth_wab_api:
     image: auth_wab_api
     build:
@@ -20,3 +23,4 @@ services:
 
 volumes:
   postgres_data:
+  rabbitmq_data:

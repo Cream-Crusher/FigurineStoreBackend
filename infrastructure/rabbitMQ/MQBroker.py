@@ -1,10 +1,14 @@
 import asyncio
 from aio_pika import connect, Message
 
+from utils.base.config import settings
+
 
 class MQBroker:
-    def __init__(self, url: str):
-        self.url = url
+    def __init__(self):
+        rabbit_setting = settings.rabbit_mq
+
+        self.url = rabbit_setting.url
         self.connection = None
         self.channel = None
 
@@ -28,10 +32,5 @@ class MQBroker:
 
         return await self.channel.declare_queue(queue_name, durable=True)
 
-    async def consume_messages(self, queue_name: str, callback):
-        queue = await self.create_queue(queue_name)
-        async with queue.iterator() as queue_iter:
-            async for message in queue_iter:
-                async with message.process():
-                    data = message.body.decode()
-                    await callback(data)
+
+MQBroker = MQBroker()

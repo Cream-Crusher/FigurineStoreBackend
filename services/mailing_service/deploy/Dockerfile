@@ -11,7 +11,9 @@ RUN pip install -r requirements.txt
 FROM python:3.10-slim AS build-image
 COPY --from=compile-image /opt/venv /opt/venv
 WORKDIR /app
-COPY services/auth_service/. /app
+
+COPY infrastructure/. /infrastructure
+COPY services/mailing_service/. /app
 
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1

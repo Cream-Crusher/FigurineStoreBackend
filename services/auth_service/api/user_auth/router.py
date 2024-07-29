@@ -1,3 +1,5 @@
+import random
+
 from fastapi import APIRouter, HTTPException, Depends
 from fastapi.security import OAuth2PasswordRequestForm
 from starlette.responses import JSONResponse
@@ -5,6 +7,10 @@ from starlette.responses import JSONResponse
 from api.user_auth.schema import UserRead, UserCreate, UserAdminCreate
 from api.user_auth.service import user_service
 from utils.Auth.authentication import get_me
+
+from broker.MQBroker import MQBroker
+
+from cache.redis import RedisRepository
 
 router = APIRouter(prefix='/auth', tags=['User|Authentication'])
 
@@ -41,12 +47,24 @@ async def logout(response: JSONResponse, users=user_service, me=Depends(get_me))
     return JSONResponse(content={"message": "Logout successful"})
 
 
-@router.post('change_password', name='changed password', status_code=200)
-async def changed_password(code: str, me=Depends(get_me)):
-    # todo тут логика смены пароля по коду в редисе
+@router.post('/refresh')
+async def refresh(refresh_token: str = None, me=Depends(get_me), users=user_service):
+    access_info = await users.refresh(refresh_token)
+    response = JSONResponse(content=access_info)
+    response.set_cookie(key="access_token", value=access_info.get('access_token'), secure=True, samesite="none")
+    response.headers["Authorization"] = f"Bearer {access_info.get('access_token')}"
+    return response
+
+
+@router.post('/verifying_confirmation_code', name='verifying confirmation code', status_code=200)
+async def verifying_confirmation_code(code: str):
+    await RedisRepository.get()
+    # todo реализовать auth bool в модельки юзера
     pass
 
 
-@router.post('send_code_by_email', name='send confirmation code by email', status_code=200)
-async def send_confirmation_code_by_email(me=Depends(get_me)):
-    pass
+@router.post('/send_code_by_email', name='send confirmation code by email', status_code=200)
+async def send_confirmation_code_by_email(email: str):
+    code = random.randint(1000, 9999)
+    await RedisRepository.create('test_key', code)
+    # todo тут логика отправки кода на почту юзеру через редис

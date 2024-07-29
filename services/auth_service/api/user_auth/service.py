@@ -4,7 +4,7 @@ from datetime import datetime
 
 from fastapi import HTTPException, Depends
 from fastapi.security import OAuth2PasswordRequestForm
-from sqlalchemy import func, update
+from sqlalchemy import func
 
 from api.user_auth.model import Users
 from utils.Auth.authentication import create_access_token, create_refresh_token
@@ -23,6 +23,8 @@ class UserService(BaseRepository):
         match by:
             case 'username':
                 query = func.lower(Users.username) == value.lower()
+            case 'refresh_token':
+                query = func.lower(Users.refresh_token) == value.lower()
             case _:
                 raise HTTPException(404, detail=f'{by} not valid')
 
@@ -66,6 +68,20 @@ class UserService(BaseRepository):
         await self.session.commit()
 
         return {"access_token": access_token, "refresh_token": refresh_token, "token_type": "bearer"}
+
+    async def refresh(self, refresh_token):
+        user = await self.get(by='refresh_token', value=refresh_token)
+
+        if not user:
+            raise HTTPException(404, detail='user not valid')
+
+        to_encode = {"user_id": str(user.id),
+                     "username": user.username,
+                     "name": user.firstname,
+                     "surname": user.lastname}
+        access_token = await create_access_token(data=to_encode)
+
+        return {"access_token": access_token, "token_type": "bearer"}
 
     async def delete_refresh_token(self, user_id: str):
         user = await self.session.get(Users, user_id)

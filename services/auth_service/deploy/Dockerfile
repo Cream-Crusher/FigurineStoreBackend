@@ -10,9 +10,8 @@ RUN pip install -r requirements.txt
 
 FROM python:3.10-slim AS build-image
 COPY --from=compile-image /opt/venv /opt/venv
-WORKDIR /app
 
-COPY infrastructure/. /infrastructure
+WORKDIR /app
 COPY services/auth_service/. /app
 
 ENV PYTHONDONTWRITEBYTECODE 1

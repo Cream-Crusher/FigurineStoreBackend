@@ -51,4 +51,4 @@ class RedisRepository:
             raise HTTPException(status_code=400, detail=str(error))
 
 
-RedisRepository = RedisRepository()
+RedisRep = RedisRepository()

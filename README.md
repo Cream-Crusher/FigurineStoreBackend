@@ -20,6 +20,7 @@
 * alembic
 * asyncio
 * aiohttp
+* httpx
 * unittest
 * environs
 

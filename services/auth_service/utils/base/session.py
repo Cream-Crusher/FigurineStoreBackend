@@ -18,7 +18,7 @@ class AsyncDatabaseSessions:
             database=db.postgres_db,
         )
 
-        self.engine = create_async_engine(self.URL, pool_size=50, max_overflow=-1)
+        self.engine = create_async_engine(self.URL, pool_size=50, max_overflow=-1, pool_pre_ping=True)
         self.factory = async_sessionmaker(self.engine, class_=AsyncSession, expire_on_commit=False)
 
     def get_url(self):

@@ -1,7 +1,7 @@
 import uuid
 
-from dataclasses import dataclass
 from datetime import datetime
+from enum import Enum
 from typing import Optional
 
 from pydantic import BaseModel, field_validator, Field, EmailStr
@@ -9,8 +9,7 @@ from pydantic import BaseModel, field_validator, Field, EmailStr
 from api.user_auth.utils import check_phone
 
 
-@dataclass
-class Roles:
+class Roles(str, Enum):
     user = "user"
     employee = "employee"
 
@@ -48,9 +47,13 @@ class UserCreate(UserBase):
     password: str = Field(max_length=40)
     active: Optional[bool]
 
-    @field_validator("role")
-    def validate_role(cls, role):
-        return role.value
+
+class User2FA:
+    email: Optional[EmailStr] = Field(default=None, max_length=60)
+
+    @field_validator("email")
+    def email_to_lower(cls, email):
+        return email.lower()
 
 
 class UserAdminCreate(UserBase):

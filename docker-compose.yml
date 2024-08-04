@@ -3,7 +3,7 @@ services:
     image: postgres:latest
     container_name: postgres
 
-  cache:
+  redis:
     image: redis
 
   rabbitmq:
@@ -24,3 +24,4 @@ services:
 volumes:
   postgres_data:
   rabbitmq_data:
+  redis_data:

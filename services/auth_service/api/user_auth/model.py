@@ -23,6 +23,8 @@ class Users(Base):
     latest_auth: Mapped[datetime] = mapped_column(nullable=True)
     refresh_token: Mapped[str] = mapped_column(nullable=True)
     active: Mapped[bool] = mapped_column(default=True, nullable=False)
+    secret: Mapped[str] = mapped_column(default=None, nullable=False)
+    two_factor_authentication: Mapped[bool] = mapped_column(default=False, nullable=False)
 
     @staticmethod
     def verify_password(password, hashed_password):

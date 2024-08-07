@@ -17,7 +17,7 @@ class Roles(str, Enum):
 class UserBase(BaseModel):
     fullname: str = Field(max_length=40)
     username: Optional[str] = Field(default=None, max_length=40)
-    email: Optional[EmailStr] = Field(default=None, max_length=60)
+    # email: Optional[EmailStr] = Field(default=None, max_length=60)
     phone: Optional[str] = Field(default=None, max_length=20)
 
     @field_validator("email")

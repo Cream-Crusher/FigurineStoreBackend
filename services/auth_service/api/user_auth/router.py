@@ -29,11 +29,13 @@ async def create_user_admin(user: UserAdminCreate, users=user_service, me=Depend
 
 @router.post('/login', name='login', status_code=200)
 async def login(form_data: OAuth2PasswordRequestForm = Depends(), users=user_service):
-    access_info = await users.login(form_data)
+    data = await users.login(form_data)
+    two_factor_authentication = data.pop('2fa')
 
-    if access_info.get('2FA'):
-        return users.get_two_factor_authentication_data(access_info)
+    if two_factor_authentication:
+        return data
 
+    access_info = data
     response = JSONResponse(content=access_info)
     response.set_cookie(key="refresh_token", value=access_info.get('refresh_token'), secure=True, samesite="none")
     response.set_cookie(key="access_token", value=access_info.get('access_token'), secure=True, samesite="none")
@@ -60,11 +62,11 @@ async def refresh(refresh_token: str = None, me=Depends(get_me), users=user_serv
 
 
 @router.post('/verifying_confirmation_code_for_login', name='verifying confirmation code', status_code=200)
-async def verifying_confirmation_code_for_login(user_id: str, users=user_service):
-    data = await RedisRep.get(user_id)
-    await users.verifying_confirmation_code(data, user_id)
+async def verifying_confirmation_code_for_login(user_id: str, code: str, users=user_service):
+    await users.verifying_confirmation_code(user_id, code)
 
-    access_info = RedisRep.get(f'access_info_{user_id}')
+    user = await users.id(user_id)
+    access_info = await users.build_assess_token(user)
     response = JSONResponse(content=access_info)
     response.set_cookie(key="refresh_token", value=access_info.get('refresh_token'), secure=True, samesite="none")
     response.set_cookie(key="access_token", value=access_info.get('access_token'), secure=True, samesite="none")
@@ -73,24 +75,19 @@ async def verifying_confirmation_code_for_login(user_id: str, users=user_service
 
 
 @router.post('/send_code_by_email', name='send confirmation code by email', status_code=200)
-async def send_confirmation_code_by_email(email: str, users=user_service):
-    user = await users.get('email', email)
+async def send_confirmation_code_by_email(user_id: str, users=user_service):
+    user = await users.id(user_id)
 
     if user is None:
         raise HTTPException(status_code=404, detail="User not found")
 
-    user_id = user.id
-    secrets = user.secret
-    opt_code = await OTP.create_one_time_password(secrets)
-
-    data = {
-        'code': opt_code,
-        'login_attempts': 0
-    }
+    opt_code = await OTP.create_one_time_password(user.secret)
+    await RedisRep.create(f'login_attempts_{user_id}', 0)
     print(opt_code)
-    await RedisRep.create(f'opt_code_{user_id}', data)
     # todo тут метод отправки кода по rabbimq к сервису рассылок
-    return user_id
+    return {
+        'details': 'code sent successfully'
+    }
 
 
 #  todo ендпоинт подтверждения 2fa

@@ -1,14 +1,12 @@
-import random
-
-import pyotp
 from fastapi import APIRouter, HTTPException, Depends
 from fastapi.security import OAuth2PasswordRequestForm
 from starlette.responses import JSONResponse
 
-from api.user_auth.schema import UserRead, UserCreate, UserAdminCreate
+from api.user_auth.schema import UserRead, UserCreate, UserAdminCreate, TwoFactorAuthentication, \
+    TwoFactorAuthenticationConfirm
 from api.user_auth.service import user_service
 from utils.Auth.OTP import OTP
-from utils.Auth.authentication import get_me
+from utils.Auth.authentication import get_me, encode_token, decode_token
 from utils.cache.redis import RedisRep
 
 router = APIRouter(prefix='/auth', tags=['User|Authentication'])
@@ -33,6 +31,14 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), users=user_ser
     two_factor_authentication = data.pop('2fa')
 
     if two_factor_authentication:
+        user_id = data.get('user_id')
+        email = data.get('email')
+        secret = data.pop('secret')
+
+        otp_code = await OTP.create_one_time_password(secret)
+        await RedisRep.create(f'login_attempts_{user_id}', 0)
+        token = await encode_token({"user_id": user_id, "code": otp_code, "email": email, "action": "Login2FA"})
+        # todo тут метод отправки jwt токена с кодом по rabbimq к сервису рассылок
         return data
 
     access_info = data
@@ -61,8 +67,16 @@ async def refresh(refresh_token: str = None, me=Depends(get_me), users=user_serv
     return response
 
 
-@router.post('/verifying_confirmation_code_for_login', name='verifying confirmation code', status_code=200)
-async def verifying_confirmation_code_for_login(user_id: str, code: str, users=user_service):
+@router.post('/login_two_factor_authentication/confirm', name='verifying confirmation one time password for login', status_code=200)
+async def verifying_confirmation_code_for_login(confirm: TwoFactorAuthenticationConfirm, users=user_service):
+    payload = await decode_token(confirm.token)
+    user_id = payload.get("user_id")
+    code = payload.get("code")
+    action = payload.get("action")
+
+    if action != "Login2FA":
+        raise HTTPException(status_code=400, detail="Invalid token action")
+
     await users.verifying_confirmation_code(user_id, code)
 
     user = await users.id(user_id)
@@ -74,20 +88,26 @@ async def verifying_confirmation_code_for_login(user_id: str, code: str, users=u
     return response
 
 
-@router.post('/send_code_by_email', name='send confirmation code by email', status_code=200)
-async def send_confirmation_code_by_email(user_id: str, users=user_service):
-    user = await users.id(user_id)
+@router.post('/activate_2fa', name='activate 2fa', status_code=200)
+async def activate_2fa(activate: TwoFactorAuthentication, users=user_service):
+    email = activate.email
 
-    if user is None:
-        raise HTTPException(status_code=404, detail="User not found")
+    users = await users.get('email', email)
+    if not users:
+        raise HTTPException(status_code=404, detail="Email not found")
 
-    opt_code = await OTP.create_one_time_password(user.secret)
-    await RedisRep.create(f'login_attempts_{user_id}', 0)
-    print(opt_code)
-    # todo тут метод отправки кода по rabbimq к сервису рассылок
-    return {
-        'details': 'code sent successfully'
-    }
+    token = await encode_token({"email": email, "action": "Activate2FA"})
+    # todo тут метод отправки jwt токена с кодом по rabbimq к сервису рассылок
+    return 201
 
 
-#  todo ендпоинт подтверждения 2fa
+@router.post('/activate_2fa/confirm', name='activate 2fa', status_code=200)
+async def activate_2fa_confirm(activate: TwoFactorAuthenticationConfirm, users=user_service):
+    payload = await decode_token(activate.token)
+    email = payload.get('email')
+    action = payload.get("action")
+
+    if action != "Activate2FA":
+        raise HTTPException(status_code=400, detail="Invalid token action")
+
+    return users.activate_two_factor_authentication(email)

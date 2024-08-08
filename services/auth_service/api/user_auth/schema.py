@@ -48,13 +48,13 @@ class UserCreate(UserBase):
     active: Optional[bool]
 
 
-class User2FA:
-    email: Optional[EmailStr] = Field(default=None, max_length=60)
-
-    @field_validator("email")
-    def email_to_lower(cls, email):
-        return email.lower()
-
-
 class UserAdminCreate(UserBase):
     password: str = Field(max_length=40)
+
+
+class TwoFactorAuthentication(BaseModel):
+    email: EmailStr
+
+
+class TwoFactorAuthenticationConfirm(UserBase):
+    token: str

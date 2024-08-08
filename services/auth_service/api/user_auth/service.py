@@ -27,6 +27,7 @@ class UserService(BaseRepository):
         return {
             'user_id': user.id,
             'email': user.email,
+            'secret': user.secret,
             'details': '2FA: send code by email'
         }
 
@@ -53,6 +54,19 @@ class UserService(BaseRepository):
 
         user = Users(**user_data)
         self.session.add(user)
+        await self.session.commit()
+        await self.session.refresh(user)
+
+        return user
+
+    async def activate_two_factor_authentication(self, email: str) -> Users:
+        user = await self.get('email', email)
+
+        if not user:
+            raise HTTPException(404, detail='user not valid')
+
+        user.email = email
+        user.two_factor_authentication = True
         await self.session.commit()
         await self.session.refresh(user)
 

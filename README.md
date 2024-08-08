@@ -21,6 +21,7 @@
 * asyncio
 * aiohttp
 * httpx
+* pyotp
 * unittest
 * environs
 

@@ -9,9 +9,10 @@ from sqlalchemy import func
 
 from api.user_auth.model import Users
 from utils.Auth.OTP import OTP
-from utils.Auth.authentication import create_access_token, create_refresh_token
+from utils.Auth.authentication import create_access_token, create_refresh_token, encode_token
 from utils.base.service import BaseRepository
 from utils.base.session import AsyncDatabase
+from utils.broker.MQBroker import MQBroker
 from utils.cache.redis import RedisRep
 
 
@@ -21,15 +22,6 @@ class UserService(BaseRepository):
     @staticmethod
     async def password_validate(password: str) -> str:
         return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
-
-    @staticmethod
-    async def get_two_factor_authentication_data(user: Users) -> dict:
-        return {
-            'user_id': user.id,
-            'email': user.email,
-            'secret': user.secret,
-            'details': '2FA: send code by email'
-        }
 
     async def get(self, by: str, value: str | int) -> Users:
         match by:
@@ -109,11 +101,11 @@ class UserService(BaseRepository):
             raise HTTPException(404, detail='user not valid')
 
         if user.two_factor_authentication or ignore_2fa:
-            base_user_info = await self.get_two_factor_authentication_data(user)
             return {
-                **base_user_info,
+                'user_id': user.id,
                 '2fa': True
             }
+
         assess_token = await self.build_assess_token(user)
 
         return {
@@ -164,6 +156,28 @@ class UserService(BaseRepository):
             raise HTTPException(status_code=403, detail="Code is invalid")
 
         return True
+
+    async def get_two_factor_authentication_data(self, user_id: str) -> dict:
+        user = await self.id(user_id)
+        return {
+            'user_id': user.id,
+            'email': user.email,
+            'secret': user.secret,
+            'details': '2FA: send code by email'
+        }
+
+    async def get_token_for_two_factor_authentication(self, user_id: str) -> str:
+        user = await self.id(user_id)
+        otp_code = await OTP.create_one_time_password(user.secret)
+        token = await encode_token(
+            {
+                "user_id": user_id,
+                "code": otp_code,
+                "email": user.email,
+                "action": "Login2FA"
+            }
+        )
+        return token
 
 
 async def get_user_service(session=Depends(AsyncDatabase.get_session)):

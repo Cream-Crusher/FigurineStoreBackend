@@ -4,8 +4,8 @@ from starlette.responses import JSONResponse
 
 from api.user_auth.schema import UserRead, UserCreate, UserAdminCreate, TwoFactorAuthentication, TwoFactorAuthenticationConfirm
 from api.user_auth.service import user_service
-from utils.Auth.OTP import OTP
 from utils.Auth.authentication import get_me, encode_token, decode_token
+from utils.broker.MQBroker import MQBroker
 from utils.cache.redis import RedisRep
 
 router = APIRouter(prefix='/auth', tags=['User|Authentication'])
@@ -31,15 +31,12 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), users=user_ser
 
     if two_factor_authentication:
         user_id = str(data.get('user_id'))
-        email = data.get('email')
-        secret = data.pop('secret')
+        jwt_token = await users.get_token_for_two_factor_authentication(user_id)
 
-        otp_code = await OTP.create_one_time_password(secret)
         await RedisRep.create(f'login_attempts_{user_id}', 0)
-        token = await encode_token({"user_id": user_id, "code": otp_code, "email": email, "action": "Login2FA"})
-        print(token)
-        # todo тут метод отправки jwt токена с кодом по rabbimq к сервису рассылок
-        return data
+        await MQBroker.send_message(routing_key='email', message=jwt_token)
+
+        return {"detail": "Code send on email"}
 
     access_info = data
     response = JSONResponse(content=access_info)
@@ -92,15 +89,15 @@ async def verifying_confirmation_code_for_login(confirm: TwoFactorAuthentication
 async def activate_2fa(activate: TwoFactorAuthentication, me=Depends(get_me), users=user_service):
     email = activate.email
     user_id = str(me.id)
-
     users = await users.id(user_id)
+
     if not users:
         raise HTTPException(status_code=404, detail="Email not found")
 
     token = await encode_token({"user_id": user_id, "email": email, "action": "Activate2FA"})
-    print(token)
-    # todo тут метод отправки jwt токена с кодом по rabbimq к сервису рассылок
-    return 201
+    await MQBroker.send_message(routing_key='email', message=token)
+
+    return 200
 
 
 @router.post('/activate_2fa/confirm', name='activate 2fa', status_code=200)

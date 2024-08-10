@@ -69,7 +69,7 @@ class RabbitMQSettings(BaseSettings):
         self.url = self._assemble_rabbit_url()
 
     def _assemble_rabbit_url(self):
-        return f"amqp://{self.user}:{self.password}@{self.host}/{self.port}"
+        return f"amqp://{self.user}:{self.password}@{self.host}/"  # {self.port}
 
 
 class RadisSettings(BaseSettings):

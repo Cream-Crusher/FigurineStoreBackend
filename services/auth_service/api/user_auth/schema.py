@@ -17,12 +17,7 @@ class Roles(str, Enum):
 class UserBase(BaseModel):
     fullname: str = Field(max_length=40)
     username: Optional[str] = Field(default=None, max_length=40)
-    # email: Optional[EmailStr] = Field(default=None, max_length=60)
     phone: Optional[str] = Field(default=None, max_length=20)
-
-    @field_validator("email")
-    def email_to_lower(cls, email):
-        return email.lower()
 
     @field_validator("phone")
     def check_phone(cls, number):
@@ -56,5 +51,5 @@ class TwoFactorAuthentication(BaseModel):
     email: EmailStr
 
 
-class TwoFactorAuthenticationConfirm(UserBase):
+class TwoFactorAuthenticationConfirm(BaseModel):
     token: str

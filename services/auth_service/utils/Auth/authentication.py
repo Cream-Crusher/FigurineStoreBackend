@@ -61,7 +61,7 @@ async def get_me(token: str = Depends(oauth2_scheme)):
 
 async def decode_token(token: str) -> dict:
     try:
-        decode_jwt = jwt.decode(token=token, key=KEY, algorithms=[ALGORITHM])
+        decode_jwt = jwt.decode(token=token, key=KEY, algorithms=ALGORITHM)
         return decode_jwt
     except jose.exceptions.ExpiredSignatureError:
         raise HTTPException(401, detail="Token expired")
@@ -70,5 +70,5 @@ async def decode_token(token: str) -> dict:
 
 
 async def encode_token(data: dict) -> str:
-    encoded_jwt = jwt.encode(data, KEY, algorithm=ALGORITHM)
+    encoded_jwt = jwt.encode(data, key=KEY, algorithm=ALGORITHM)
     return encoded_jwt

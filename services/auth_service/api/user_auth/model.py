@@ -15,7 +15,7 @@ class Users(Base):
     fullname: Mapped[str] = mapped_column(default=None, nullable=False)
     username: Mapped[str] = mapped_column(default=None, nullable=False)
     phone: Mapped[str] = mapped_column(default=None, nullable=False)
-    email: Mapped[str] = mapped_column(default=None, nullable=False)
+    email: Mapped[str] = mapped_column(default=None, nullable=True)
     role: Mapped[str] = mapped_column(default='user', nullable=False)  # user, employee, admin
     password: Mapped[str] = mapped_column(nullable=False)
     created_at: Mapped[datetime] = mapped_column(default=datetime.utcnow, nullable=False)

@@ -2,8 +2,7 @@ from fastapi import APIRouter, HTTPException, Depends
 from fastapi.security import OAuth2PasswordRequestForm
 from starlette.responses import JSONResponse
 
-from api.user_auth.schema import UserRead, UserCreate, UserAdminCreate, TwoFactorAuthentication, \
-    TwoFactorAuthenticationConfirm
+from api.user_auth.schema import UserRead, UserCreate, UserAdminCreate, TwoFactorAuthentication, TwoFactorAuthenticationConfirm
 from api.user_auth.service import user_service
 from utils.Auth.OTP import OTP
 from utils.Auth.authentication import get_me, encode_token, decode_token
@@ -31,13 +30,14 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), users=user_ser
     two_factor_authentication = data.pop('2fa')
 
     if two_factor_authentication:
-        user_id = data.get('user_id')
+        user_id = str(data.get('user_id'))
         email = data.get('email')
         secret = data.pop('secret')
 
         otp_code = await OTP.create_one_time_password(secret)
         await RedisRep.create(f'login_attempts_{user_id}', 0)
         token = await encode_token({"user_id": user_id, "code": otp_code, "email": email, "action": "Login2FA"})
+        print(token)
         # todo тут метод отправки jwt токена с кодом по rabbimq к сервису рассылок
         return data
 
@@ -59,7 +59,7 @@ async def logout(response: JSONResponse, users=user_service, me=Depends(get_me))
 
 
 @router.post('/refresh')
-async def refresh(refresh_token: str = None, me=Depends(get_me), users=user_service):
+async def refresh(refresh_token: str = None, users=user_service):
     access_info = await users.refresh(refresh_token)
     response = JSONResponse(content=access_info)
     response.set_cookie(key="access_token", value=access_info.get('access_token'), secure=True, samesite="none")
@@ -89,14 +89,16 @@ async def verifying_confirmation_code_for_login(confirm: TwoFactorAuthentication
 
 
 @router.post('/activate_2fa', name='activate 2fa', status_code=200)
-async def activate_2fa(activate: TwoFactorAuthentication, users=user_service):
+async def activate_2fa(activate: TwoFactorAuthentication, me=Depends(get_me), users=user_service):
     email = activate.email
+    user_id = str(me.id)
 
-    users = await users.get('email', email)
+    users = await users.id(user_id)
     if not users:
         raise HTTPException(status_code=404, detail="Email not found")
 
-    token = await encode_token({"email": email, "action": "Activate2FA"})
+    token = await encode_token({"user_id": user_id, "email": email, "action": "Activate2FA"})
+    print(token)
     # todo тут метод отправки jwt токена с кодом по rabbimq к сервису рассылок
     return 201
 
@@ -104,10 +106,13 @@ async def activate_2fa(activate: TwoFactorAuthentication, users=user_service):
 @router.post('/activate_2fa/confirm', name='activate 2fa', status_code=200)
 async def activate_2fa_confirm(activate: TwoFactorAuthenticationConfirm, users=user_service):
     payload = await decode_token(activate.token)
+    user_id = payload.get("user_id")
     email = payload.get('email')
     action = payload.get("action")
 
     if action != "Activate2FA":
         raise HTTPException(status_code=400, detail="Invalid token action")
 
-    return users.activate_two_factor_authentication(email)
+    await users.activate_two_factor_authentication(user_id, email)
+
+    return 200

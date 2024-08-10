@@ -59,11 +59,14 @@ class UserService(BaseRepository):
 
         return user
 
-    async def activate_two_factor_authentication(self, email: str) -> Users:
-        user = await self.get('email', email)
+    async def activate_two_factor_authentication(self, user_id: str, email: str) -> Users:
+        user = await self.id(user_id)
 
         if not user:
             raise HTTPException(404, detail='user not valid')
+
+        if user.two_factor_authentication:
+            raise HTTPException(404, detail='2FA already activated')
 
         user.email = email
         user.two_factor_authentication = True

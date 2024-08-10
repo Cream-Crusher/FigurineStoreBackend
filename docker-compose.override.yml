@@ -8,21 +8,20 @@ services:
 
   dbpostgres:
     env_file:
-      - services/database_service/deploy/env/dev.env
+      - infrastructure/postgres/env/dev.env
     restart: always
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      test: ["CMD-SHELL", "pg_isready -U postgres -d ESBlog"]
       interval: 10s
       timeout: 10s
       retries: 5
       start_period: 10s
     ports:
-      - "5432:5432"
+      - "5433:5432"
     networks:
       - traefik-proxy
-
     volumes:
-      - /var/lib/postgresql/data/pgdata
+      - ./volumes/postgres:/var/lib/postgresql/data
 
   rabbitmq:
     hostname: rabbitmq
@@ -33,14 +32,14 @@ services:
       timeout: 30s
       retries: 3
     volumes:
-      - ./rabbitmq:/var/lib/rabbitmq
+      - ./volumes/rabbitmq:/var/lib/rabbitmq
     ports:
-      - 15672:15672
-      - 5673:5673
+      - "5672:5672"
     env_file:
       - infrastructure/rabbitMQ/env/dev.env
     environment:
       - RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS=-rabbit log_levels [{connection,error},{default,error}] disk_free_limit 2147483648
+      - RRABBITMQ_FEATURE_FLAGS=stream_single_active_consumer
     networks:
       - traefik-proxy
 

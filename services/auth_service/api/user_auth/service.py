@@ -12,7 +12,6 @@ from utils.Auth.OTP import OTP
 from utils.Auth.authentication import create_access_token, create_refresh_token, encode_token
 from utils.base.service import BaseRepository
 from utils.base.session import AsyncDatabase
-from utils.broker.MQBroker import MQBroker
 from utils.cache.redis import RedisRep
 
 

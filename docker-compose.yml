@@ -7,7 +7,7 @@ services:
     image: redis
 
   rabbitmq:
-    image: rabbitmq:3.10.7-management
+    image: rabbitmq:latest
 
   auth_wab_api:
     image: auth_wab_api

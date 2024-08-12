@@ -1,8 +1,8 @@
+import redis
 import json
 
 from fastapi import HTTPException
 
-import redis
 
 from utils.base.config import settings
 

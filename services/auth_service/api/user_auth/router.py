@@ -30,13 +30,16 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), users=user_ser
     two_factor_authentication = data.pop('2fa')
 
     if two_factor_authentication:
-        user_id = str(data.get('user_id'))
-        jwt_token = await users.get_token_for_two_factor_authentication(user_id)
+        user_id = data.get('user_id')
+        data = await users.get_data_for_two_factor_authentication(user_id)
 
         await RedisRep.create(f'login_attempts_{user_id}', 0)
-        await MQBroker.send_message(routing_key='email', message=jwt_token)
+        await MQBroker.send_message(routing_key='email', message=data)
 
-        return {"detail": "Code send on email"}
+        return {
+            "detail": "Code send on email",
+            "user_id": user_id
+        }
 
     access_info = data
     response = JSONResponse(content=access_info)
@@ -65,14 +68,9 @@ async def refresh(refresh_token: str = None, users=user_service):
 
 
 @router.post('/login_two_factor_authentication/confirm', name='verifying confirmation one time password for login', status_code=200)
-async def verifying_confirmation_code_for_login(confirm: TwoFactorAuthenticationConfirm, users=user_service):
-    payload = await decode_token(confirm.token)
-    user_id = payload.get("user_id")
-    code = payload.get("code")
-    action = payload.get("action")
-
-    if action != "Login2FA":
-        raise HTTPException(status_code=400, detail="Invalid token action")
+async def verifying_confirmation_code_for_login(data: TwoFactorAuthenticationConfirm, users=user_service):
+    user_id = data.user_id
+    code = data.code
 
     await users.verifying_confirmation_code(user_id, code)
 
@@ -86,23 +84,20 @@ async def verifying_confirmation_code_for_login(confirm: TwoFactorAuthentication
 
 
 @router.post('/activate_2fa', name='activate 2fa', status_code=200)
-async def activate_2fa(activate: TwoFactorAuthentication, me=Depends(get_me), users=user_service):
+async def activate_2fa(activate: TwoFactorAuthentication, me=Depends(get_me)):
     email = activate.email
     user_id = str(me.id)
-    users = await users.id(user_id)
 
-    if not users:
-        raise HTTPException(status_code=404, detail="Email not found")
-
-    token = await encode_token({"user_id": user_id, "email": email, "action": "Activate2FA"})
-    await MQBroker.send_message(routing_key='email', message=token)
+    jwt_token = await encode_token({"user_id": user_id, "email": email, "action": "Activate2FA"})
+    data = {"email": email, "action": "Activate2FA", "jwt_token": jwt_token}
+    await MQBroker.send_message(routing_key='email', message=data)
 
     return 200
 
 
-@router.post('/activate_2fa/confirm', name='activate 2fa', status_code=200)
-async def activate_2fa_confirm(activate: TwoFactorAuthenticationConfirm, users=user_service):
-    payload = await decode_token(activate.token)
+@router.get('/activate_2fa/confirm', name='activate 2fa', status_code=200)
+async def activate_2fa_confirm(token: str, users=user_service):
+    payload = await decode_token(token)
     user_id = payload.get("user_id")
     email = payload.get('email')
     action = payload.get("action")
@@ -110,6 +105,6 @@ async def activate_2fa_confirm(activate: TwoFactorAuthenticationConfirm, users=u
     if action != "Activate2FA":
         raise HTTPException(status_code=400, detail="Invalid token action")
 
-    await users.activate_two_factor_authentication(user_id, email)
+    await users.activate_two_factor_authentication(user_id, email, action)
 
     return 200

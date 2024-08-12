@@ -1,3 +1,5 @@
+import json
+
 from aio_pika import connect, Message
 
 from utils.base.config import settings
@@ -11,6 +13,13 @@ class RabbitMQ:
         self.connection = None
         self.channel = None
 
+    @staticmethod
+    async def valid_data(value: any) -> str:
+        if isinstance(value, dict):
+            value = json.dumps(value)
+
+        return value
+
     async def connect(self):
         self.connection = await connect(self.url)
         self.channel = await self.connection.channel()
@@ -19,9 +28,11 @@ class RabbitMQ:
         if self.connection:
             await self.connection.close()
 
-    async def send_message(self, routing_key: str, message: str):
+    async def send_message(self, routing_key: str, message: str | dict):
         if not self.channel:
             await self.connect()
+
+        message = await self.valid_data(message)
 
         await self.channel.default_exchange.publish(Message(body=message.encode('utf-8')), routing_key=routing_key)
 

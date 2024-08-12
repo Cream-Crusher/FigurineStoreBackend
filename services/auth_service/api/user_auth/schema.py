@@ -52,4 +52,5 @@ class TwoFactorAuthentication(BaseModel):
 
 
 class TwoFactorAuthenticationConfirm(BaseModel):
-    token: str
+    user_id: str
+    code: str

@@ -165,18 +165,17 @@ class UserService(BaseRepository):
             'details': '2FA: send code by email'
         }
 
-    async def get_token_for_two_factor_authentication(self, user_id: str) -> str:
+    async def get_data_for_two_factor_authentication(self, user_id: str) -> dict:
         user = await self.id(user_id)
         otp_code = await OTP.create_one_time_password(user.secret)
-        token = await encode_token(
+        data = (
             {
-                "user_id": user_id,
                 "code": otp_code,
                 "email": user.email,
                 "action": "Login2FA"
             }
         )
-        return token
+        return data
 
 
 async def get_user_service(session=Depends(AsyncDatabase.get_session)):

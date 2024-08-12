@@ -6,12 +6,12 @@ services:
     volumes:
       - redis_data:/data
 
-  dbpostgres:
+  dbpostgres_auth:
     env_file:
-      - infrastructure/postgres/env/dev.env
+      - infrastructure/postgres/env/auth_service.env
     restart: always
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d ESBlog"]
+      test: ["CMD-SHELL", "pg_isready -U postgres -d ESBlogAuth"]
       interval: 10s
       timeout: 10s
       retries: 5
@@ -47,23 +47,13 @@ services:
     env_file:
       - services/auth_service/deploy/env/dev.env
     depends_on:
-      - dbpostgres
+      - dbpostgres_auth
       - rabbitmq
     ports:
       - "8000:8000"
     networks:
       - traefik-proxy
 
-  database_wab_api:
-    env_file:
-      - services/database_service/deploy/env/dev.env
-    depends_on:
-      - dbpostgres
-      - rabbitmq
-    ports:
-      - "8001:8001"
-    networks:
-      - traefik-proxy
 
 networks:
   traefik-proxy:

@@ -1,7 +1,7 @@
 services:
-  dbpostgres:
+  dbpostgres_auth:
     image: postgres:latest
-    container_name: postgres
+    container_name: postgres_auth
 
   redis:
     image: redis

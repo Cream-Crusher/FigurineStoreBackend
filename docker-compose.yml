@@ -1,4 +1,8 @@
 services:
+
+  dbmongo_catalog_service:
+    image: mongo:latest
+
   dbpostgres_auth:
     image: postgres:latest
     container_name: postgres_auth
@@ -23,5 +27,6 @@ services:
 
 volumes:
   postgres_data:
-  rabbitmq_data:
+  mongo_data:
   redis_data:
+  rabbitmq_data:

@@ -7,3 +7,4 @@
 *.coverage
 rabbitmq
 volumes
+database_service

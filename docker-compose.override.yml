@@ -6,6 +6,22 @@ services:
     volumes:
       - redis_data:/data
 
+  dbmongo_catalog_service:
+    env_file:
+      - infrastructure/mongodb/env/catalog_service.env
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongo mongo:27017/test --quiet
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
+    ports:
+      - 27017:27017
+    networks:
+      - traefik-proxy
+    volumes:
+      - ./volumes/mongodb:/var/lib/mongodb/data
+
   dbpostgres_auth:
     env_file:
       - infrastructure/postgres/env/auth_service.env

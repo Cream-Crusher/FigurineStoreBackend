@@ -2,7 +2,7 @@ from typing import List
 
 from fastapi import APIRouter
 
-from api.catalog.schema import ProductRead, ProductCreate
+from api.catalog.schema import ProductRead, ProductCreate, ProductUpdate
 from api.catalog.service import product_service
 
 router = APIRouter(prefix='/product', tags=['Product|Products'])
@@ -19,24 +19,15 @@ async def product_by_id(product_id: str, products=product_service):
 
 
 @router.post('/', name='Create Product', status_code=201)
-async def create_blog(product: ProductCreate, products=product_service):
+async def create_product(product: ProductCreate, products=product_service):
     return await products.create(product.__dict__)
 
-# @router.delete('/{blog_id}', name='Delete Blog By Id')
-# async def del_blog(blog_id: str, blogs=blog_service, me=Depends(get_me)):
-#     blog_owner_id = (await blogs.id(blog_id)).owner_id
-#
-#     if not (me.role in ["admin"] or blog_owner_id in me.roles):
-#         raise HTTPException(403, "forbidden")
-#
-#     return await blogs.delete(blog_id)
-#
-#
-# @router.patch('/', name='Update Blog By Id', response_model=BlogRead)
-# async def update_blog(blog_id: str, blog: BlogUpdate, blogs=blog_service, me=Depends(get_me)):
-#     blog_owner_id = (await blogs.id(blog_id)).owner_id
-#
-#     if not (me.role in ["admin"] or blog_owner_id in me.roles):
-#         raise HTTPException(403, "forbidden")
-#
-#     return await blogs.update(blog_id, blog.__dict__)
+
+@router.delete('/{product_id}', name='Delete Product By Id')
+async def del_product(product_id: str, products=product_service):
+    return await products.delete(product_id)
+
+
+@router.patch('/', name='Update Product By Id', response_model=ProductRead)
+async def update_product(product_id: str, product: ProductUpdate, products=product_service):
+    return await products.update(product_id, product.__dict__)

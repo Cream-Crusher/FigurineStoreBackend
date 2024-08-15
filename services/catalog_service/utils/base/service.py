@@ -14,6 +14,7 @@ class BaseRepository:
 
         if not models:
             return []
+
         return models
 
     async def id(self, model_id: str) -> model:
@@ -33,38 +34,31 @@ class BaseRepository:
         except Exception as error:
             raise HTTPException(status_code=400, detail=f'{error}')
 
-    # async def delete(self, model_id: str) -> int:
-    #     try:
-    #         model = await self.id(model_id)
-    #         if not model:
-    #             raise HTTPException(404, "not found")
-    #         await self.session.delete(model)
-    #         await self.session.commit()
-    #         return 200
-    #     except IntegrityError as error:
-    #         raise HTTPException(403, "There are links to other tables")
-    #     except Exception as error:
-    #         raise HTTPException(500, f"{error}")
-    #
-    # async def update(self, model_id: str, update_data: dict) -> model:
-    #     model = await self.id(model_id)
-    #     for key, value in update_data.items():
-    #         if value is not None:
-    #             attr_value = getattr(model, key)
-    #             attr_value = attr_value.lower() if isinstance(attr_value, str) else attr_value
-    #             validate_value = value.lower() if isinstance(value, str) else value
-    #             if attr_value == validate_value:
-    #                 continue
-    #             else:
-    #                 setattr(model, key, value)
-    #     model.updated_at = datetime.utcnow()
-    #     await self.session.commit()
-    #     return model
-    #
-    # async def filter(self, query) -> ScalarResult:
-    #     result = await self.session.scalars(select(self.model).where(query))
-    #
-    #     if not result:
-    #         raise HTTPException(404, 'objects not found')
-    #
-    #     return result
+    async def delete(self, model_id: str) -> int:
+        try:
+            model = await self.model.get(model_id)
+
+            if not model:
+                raise HTTPException(404, "not found")
+
+            await model.delete()
+            return 200
+
+        except Exception as error:
+            raise HTTPException(500, f"{error}")
+
+    async def update(self, model_id: str, update_data: dict) -> model:
+        model = await self.id(model_id)
+
+        for key, value in update_data.items():
+            if value is not None:
+                attr_value = getattr(model, key)
+                attr_value = attr_value.lower() if isinstance(attr_value, str) else attr_value
+                validate_value = value.lower() if isinstance(value, str) else value
+                if attr_value == validate_value:
+                    continue
+                else:
+                    setattr(model, key, value)
+
+        await model.save()
+        return model

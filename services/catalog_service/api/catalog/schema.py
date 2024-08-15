@@ -27,4 +27,4 @@ class ProductCreate(Product):
 
 
 class ProductUpdate(Product):
-    id: PydanticObjectId = Field()
+    pass

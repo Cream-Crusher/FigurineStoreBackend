@@ -1,6 +1,6 @@
 from fastapi import Depends
 
-from api.catalog.model import Product
+from api.product.model import Product
 from utils.base.service import BaseRepository
 from utils.base.session import AsyncDatabase
 

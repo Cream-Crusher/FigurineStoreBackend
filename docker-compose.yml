@@ -19,11 +19,17 @@ services:
       context: .
       dockerfile: services/auth_service/deploy/Dockerfile
 
-  database_wab_api:
-    image: database_wab_api
+  mailing_service:
+    image: mailing_service
     build:
       context: .
-      dockerfile: services/database_service/deploy/Dockerfile
+      dockerfile: services/mailing_service/deploy/Dockerfile
+
+  catalog_web_api:
+    image: catalog_web_api
+    build:
+      context: .
+      dockerfile: services/catalog_service/deploy/Dockerfile
 
 volumes:
   postgres_data:

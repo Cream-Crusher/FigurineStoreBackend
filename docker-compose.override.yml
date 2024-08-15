@@ -55,7 +55,6 @@ services:
       - infrastructure/rabbitMQ/env/dev.env
     environment:
       - RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS=-rabbit log_levels [{connection,error},{default,error}] disk_free_limit 2147483648
-      - RRABBITMQ_FEATURE_FLAGS=stream_single_active_consumer
     networks:
       - traefik-proxy
 
@@ -70,6 +69,23 @@ services:
     networks:
       - traefik-proxy
 
+  catalog_web_api:
+    env_file:
+      - services/catalog_service/deploy/env/dev.env
+    depends_on:
+      - dbmongo_catalog_service
+    ports:
+      - "8001:8001"
+    networks:
+      - traefik-proxy
+
+  mailing_service:
+    env_file:
+      - services/mailing_service/deploy/env/dev.env
+    depends_on:
+      - rabbitmq
+    networks:
+      - traefik-proxy
 
 networks:
   traefik-proxy:

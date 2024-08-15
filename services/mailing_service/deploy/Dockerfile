@@ -5,7 +5,7 @@ ENV VIRTUAL_ENV=/opt/venv
 RUN python3 -m venv $VIRTUAL_ENV
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
-COPY services/auth_service/deploy/requirements.txt .
+COPY services/mailing_service/deploy/requirements.txt .
 RUN pip install -r requirements.txt
 
 FROM python:3.10-slim AS build-image

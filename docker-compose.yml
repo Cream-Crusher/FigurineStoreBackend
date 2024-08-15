@@ -1,9 +1,9 @@
 services:
 
-  dbmongo_catalog_service:
+  catalogdb:
     image: mongo:latest
 
-  dbpostgres_auth:
+  authdb:
     image: postgres:latest
     container_name: postgres_auth
 
@@ -13,20 +13,20 @@ services:
   rabbitmq:
     image: rabbitmq:latest
 
-  auth_wab_api:
-    image: auth_wab_api
+  auth_api:
+    image: auth_api
     build:
       context: .
       dockerfile: services/auth_service/deploy/Dockerfile
 
-  mailing_service:
-    image: mailing_service
+  mailing:
+    image: mailing
     build:
       context: .
       dockerfile: services/mailing_service/deploy/Dockerfile
 
-  catalog_web_api:
-    image: catalog_web_api
+  catalog_api:
+    image: catalog_api
     build:
       context: .
       dockerfile: services/catalog_service/deploy/Dockerfile

@@ -6,9 +6,9 @@ services:
     volumes:
       - redis_data:/data
 
-  dbmongo_catalog_service:
+  catalogdb:
     env_file:
-      - infrastructure/mongodb/env/catalog_service.env
+      - services/catalog_service/deploy/env/dev.env
     healthcheck:
       test: echo 'db.runCommand("ping").ok' | mongo mongo:27017/test --quiet
       interval: 10s
@@ -22,9 +22,9 @@ services:
     volumes:
       - ./volumes/mongodb:/var/lib/mongodb/data
 
-  dbpostgres_auth:
+  authdb:
     env_file:
-      - infrastructure/postgres/env/auth_service.env
+      - services/auth_service/deploy/env/dev.env
     restart: always
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres -d ESBlogAuth"]
@@ -58,28 +58,28 @@ services:
     networks:
       - traefik-proxy
 
-  auth_wab_api:
+  auth_api:
     env_file:
       - services/auth_service/deploy/env/dev.env
     depends_on:
-      - dbpostgres_auth
+      - authdb
       - rabbitmq
     ports:
       - "8000:8000"
     networks:
       - traefik-proxy
 
-  catalog_web_api:
+  catalog_api:
     env_file:
       - services/catalog_service/deploy/env/dev.env
     depends_on:
-      - dbmongo_catalog_service
+      - catalogdb
     ports:
       - "8001:8001"
     networks:
       - traefik-proxy
 
-  mailing_service:
+  mailing:
     env_file:
       - services/mailing_service/deploy/env/dev.env
     depends_on:

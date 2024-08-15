@@ -1,6 +1,6 @@
 import uvicorn
 from fastapi import FastAPI, APIRouter
-
+from contextlib import asynccontextmanager
 from api.product.model import Product
 from api.product.router import router as catalog_router
 from starlette.middleware.cors import CORSMiddleware
@@ -20,7 +20,7 @@ app = FastAPI(
         'docExpansion': 'none',
         'persistAuthorization': 'true',
         'defaultModelRendering': 'model'
-    }
+    },
 )
 
 if settings.api.environment == 'prod':

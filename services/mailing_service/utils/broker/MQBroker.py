@@ -1,6 +1,6 @@
 from aio_pika import connect, Message
 
-from utils.base.config import settings
+from services.mailing_service.utils.base.config import settings
 
 
 class RabbitMQ:

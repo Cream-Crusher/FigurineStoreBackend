@@ -2,7 +2,7 @@ import json
 
 from aio_pika import connect, Message
 
-from utils.base.config import settings
+from services.auth_service.utils.base.config import settings
 
 
 class RabbitMQ:

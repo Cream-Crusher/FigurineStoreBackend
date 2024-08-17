@@ -2,7 +2,7 @@ from sqlalchemy import exc
 import sqlalchemy.engine.url as SQURL
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sessionmaker
 
-from utils.base.config import settings
+from services.auth_service.utils.base.config import settings
 
 
 class AsyncDatabaseSessions:
@@ -11,13 +11,22 @@ class AsyncDatabaseSessions:
 
         self.URL = SQURL.URL.create(
             drivername="postgresql+asyncpg",
-            username=db.postgres_user,
-            password=db.postgres_password,
-            host=db.postgres_host,
-            port=db.postgres_port,
-            database=db.postgres_db,
+            username=db.user,
+            password=db.password,
+            host=db.host,
+            port=db.port,
+            database=db.db,
         )
+        # self.URL = SQURL.URL.create(
+        #     drivername="postgresql+asyncpg",
+        #     username=db.user,
+        #     password=db.password,
+        #     host='authdb',
+        #     port=5432,
+        #     database=db.db,
+        # )
 
+        print(self.URL)
         self.engine = create_async_engine(self.URL, pool_size=50, max_overflow=-1, pool_pre_ping=True)
         self.factory = async_sessionmaker(self.engine, class_=AsyncSession, expire_on_commit=False)
 

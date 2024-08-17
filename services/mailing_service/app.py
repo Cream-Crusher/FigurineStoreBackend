@@ -1,7 +1,7 @@
 import asyncio
 
-from src.handler import Handlerbroker
-from utils.broker.MQBroker import MQBroker
+from services.mailing_service.src.handler import Handlerbroker
+from services.mailing_service.utils.broker.MQBroker import MQBroker
 
 
 async def main():

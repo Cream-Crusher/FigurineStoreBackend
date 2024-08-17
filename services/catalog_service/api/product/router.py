@@ -2,8 +2,8 @@ from typing import List
 
 from fastapi import APIRouter
 
-from api.product.schema import ProductRead, ProductCreate, ProductUpdate
-from api.product.service import product_service
+from services.catalog_service.api.product.schema import ProductRead, ProductCreate, ProductUpdate
+from services.catalog_service.api.product.service import product_service
 
 router = APIRouter(prefix='/product', tags=['Product|Products'])
 

@@ -3,7 +3,8 @@ from pydantic import BaseModel
 from pydantic_settings import BaseSettings
 
 dev = True
-env_file = "deploy/env/dev.env" if dev else "deploy/env/prod.env"
+deploy_path = 'services/auth_service/deploy/env/'
+env_file = f"{deploy_path}dev.env" if dev else f"{deploy_path}prod.env"
 
 load_dotenv(env_file)
 
@@ -30,17 +31,17 @@ class APISettings(BaseSettings):
 
 
 class DatabaseSettings(BaseSettings):
-    postgres_port: int
-    postgres_host: str
-    postgres_db: str
-    postgres_user: str
-    postgres_password: str
+    port: int
+    host: str
+    db: str
+    user: str
+    password: str
     # ssl_path: str
 
     url: str = ""
 
     class Config:
-        env_prefix = "DB_"
+        env_prefix = "POSTGRES_"
 
     def __init__(self, **values):
         super().__init__(**values)
@@ -49,7 +50,7 @@ class DatabaseSettings(BaseSettings):
     def _assemble_database_url(self):
         ssl_part = "?ssl=verify-full" if not dev else ""
         return (
-            f"postgresql+asyncpg://{self.postgres_user}:{self.postgres_password}@{self.postgres_host}:{self.postgres_port}/{self.postgres_db}{ssl_part}"
+            f"postgresql+asyncpg://{self.user}:{self.password}@{self.host}:{self.port}/{self.db}{ssl_part}"
         )
 
 

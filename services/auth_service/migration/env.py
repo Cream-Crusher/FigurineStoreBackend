@@ -5,8 +5,8 @@ from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
 from alembic import context
 
-from utils.base.BaseModel import Base
-from utils.base.config import settings
+from services.auth_service.utils.base.BaseModel import Base
+from services.auth_service.utils.base.config import settings
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -20,7 +20,7 @@ if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
 # Models start
-from api.user_auth.model import Users
+from services.auth_service.api.user_auth.model import Users
 # Models end
 
 target_metadata = Base.metadata

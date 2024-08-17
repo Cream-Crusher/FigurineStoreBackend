@@ -1,6 +1,6 @@
 import json
 
-from src.services.email_service.SMTP import smtp
+from services.mailing_service.src.email.SMTP import smtp
 
 
 class HandlerMQBroker:

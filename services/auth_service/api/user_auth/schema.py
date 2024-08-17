@@ -6,7 +6,7 @@ from typing import Optional
 
 from pydantic import BaseModel, field_validator, Field, EmailStr
 
-from api.user_auth.utils import check_phone
+from services.auth_service.api.user_auth.utils import check_phone
 
 
 class Roles(str, Enum):

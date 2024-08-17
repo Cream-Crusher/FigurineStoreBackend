@@ -27,7 +27,7 @@ services:
       - services/auth_service/deploy/env/dev.env
     restart: always
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d ESBlogAuth"]
+      test: ["CMD-SHELL", "pg_isready -U postgres -d AuthDB"]
       interval: 10s
       timeout: 10s
       retries: 5
@@ -61,6 +61,10 @@ services:
   auth_api:
     env_file:
       - services/auth_service/deploy/env/dev.env
+    environment:
+      - POSTGRES_HOST=authdb
+      - POSTGRES_PORT=5432
+      - RABBITMQ_HOST=rabbitmq
     depends_on:
       - authdb
       - rabbitmq
@@ -72,6 +76,8 @@ services:
   catalog_api:
     env_file:
       - services/catalog_service/deploy/env/dev.env
+    environment:
+      - MONGO_HOST=catalogdb
     depends_on:
       - catalogdb
     ports:
@@ -82,6 +88,8 @@ services:
   mailing:
     env_file:
       - services/mailing_service/deploy/env/dev.env
+    environment:
+      - RABBITMQ_HOST=rabbitmq
     depends_on:
       - rabbitmq
     networks:

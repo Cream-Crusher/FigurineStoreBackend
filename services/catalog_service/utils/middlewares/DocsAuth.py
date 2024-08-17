@@ -5,7 +5,7 @@ from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoin
 from starlette.requests import Request
 from starlette.responses import Response
 
-from utils.base.config import settings
+from services.catalog_service.utils.base.config import settings
 
 
 class ApiDocBasicAuthMiddleware(BaseHTTPMiddleware):

@@ -2,11 +2,11 @@ from fastapi import APIRouter, HTTPException, Depends
 from fastapi.security import OAuth2PasswordRequestForm
 from starlette.responses import JSONResponse
 
-from api.user_auth.schema import UserRead, UserCreate, UserAdminCreate, TwoFactorAuthentication, TwoFactorAuthenticationConfirm
-from api.user_auth.service import user_service
-from utils.Auth.authentication import get_me, encode_token, decode_token
-from utils.broker.MQBroker import MQBroker
-from utils.cache.redis import RedisRep
+from services.auth_service.api.user_auth.schema import UserRead, UserCreate, UserAdminCreate, TwoFactorAuthentication, TwoFactorAuthenticationConfirm
+from services.auth_service.api.user_auth.service import user_service
+from services.auth_service.utils.Auth.authentication import get_me, encode_token, decode_token
+from services.auth_service.utils.broker.MQBroker import MQBroker
+from services.auth_service.utils.cache.redis import RedisRep
 
 router = APIRouter(prefix='/auth', tags=['User|Authentication'])
 
@@ -105,6 +105,6 @@ async def activate_2fa_confirm(token: str, users=user_service):
     if action != "Activate2FA":
         raise HTTPException(status_code=400, detail="Invalid token action")
 
-    await users.activate_two_factor_authentication(user_id, email, action)
+    await users.activate_two_factor_authentication(user_id, email)
 
     return 200

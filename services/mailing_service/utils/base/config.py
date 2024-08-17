@@ -3,7 +3,8 @@ from pydantic import BaseModel
 from pydantic_settings import BaseSettings
 
 dev = True
-env_file = "deploy/env/dev.env" if dev else "deploy/env/prod.env"
+deploy_path = 'services/mailing_service/deploy/env/'
+env_file = f"{deploy_path}dev.env" if dev else f"{deploy_path}prod.env"
 
 load_dotenv(env_file)
 

@@ -1,4 +1,4 @@
-SQLAlchemy==2.0.31
+SQLAlchemy==2.0.22
 fastapi==0.111.0
 alembic==1.13.1
 environs==11.0.0

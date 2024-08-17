@@ -2,17 +2,16 @@ import bcrypt
 
 from datetime import datetime
 
-import pyotp
 from fastapi import HTTPException, Depends
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy import func
 
-from api.user_auth.model import Users
-from utils.Auth.OTP import OTP
-from utils.Auth.authentication import create_access_token, create_refresh_token, encode_token
-from utils.base.service import BaseRepository
-from utils.base.session import AsyncDatabase
-from utils.cache.redis import RedisRep
+from services.auth_service.api.user_auth.model import Users
+from services.auth_service.utils.Auth.OTP import OTP
+from services.auth_service.utils.Auth.authentication import create_access_token, create_refresh_token
+from services.auth_service.utils.base.service import BaseRepository
+from services.auth_service.utils.base.session import AsyncDatabase
+from services.auth_service.utils.cache.redis import RedisRep
 
 
 class UserService(BaseRepository):

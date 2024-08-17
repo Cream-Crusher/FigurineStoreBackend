@@ -1,8 +1,10 @@
+import os
+
 import httpx
 
 from jinja2 import Template
 
-from utils.base.config import settings
+from services.mailing_service.utils.base.config import settings
 
 
 class SMTP:
@@ -13,7 +15,8 @@ class SMTP:
 
     @staticmethod
     async def init_template(action: str) -> any:
-        path = "src/services/email_service/template/"
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        path = current_dir + "/template/"
 
         match action:
             case "Activate2FA":

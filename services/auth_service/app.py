@@ -2,8 +2,8 @@ import uvicorn
 from fastapi import FastAPI, APIRouter
 from starlette.middleware.cors import CORSMiddleware
 
-from api.user_auth.router import router as auth_router
-from utils.base.config import settings
+from services.auth_service.api.user_auth.router import router as auth_router
+from services.auth_service.utils.base.config import settings
 
 service_title = settings.api.title
 

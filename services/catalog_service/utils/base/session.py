@@ -1,7 +1,7 @@
 from beanie import init_beanie
 from motor.motor_asyncio import AsyncIOMotorClient
 
-from utils.base.config import settings
+from services.catalog_service.utils.base.config import settings
 
 
 class AsyncDatabaseClient:

@@ -5,7 +5,7 @@ from datetime import datetime
 
 from sqlalchemy.orm import Mapped, mapped_column
 
-from utils.base.BaseModel import Base
+from services.auth_service.utils.base.BaseModel import Base
 
 
 class Users(Base):

@@ -4,7 +4,7 @@ import json
 from fastapi import HTTPException
 
 
-from utils.base.config import settings
+from services.auth_service.utils.base.config import settings
 
 
 class RedisRepository:

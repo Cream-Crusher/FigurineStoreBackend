@@ -2,31 +2,37 @@ services:
 
   catalogdb:
     image: mongo:latest
+    container_name: catalogdb
 
   authdb:
     image: postgres:latest
-    container_name: postgres_auth
+    container_name: authdb
 
   redis:
     image: redis
+    container_name: redis
 
   rabbitmq:
     image: rabbitmq:latest
+    container_name: rabbitmq
 
   auth_api:
     image: auth_api
+    container_name: auth_api
     build:
       context: .
       dockerfile: services/auth_service/deploy/Dockerfile
 
   mailing:
     image: mailing
+    container_name: mailing
     build:
       context: .
       dockerfile: services/mailing_service/deploy/Dockerfile
 
   catalog_api:
     image: catalog_api
+    container_name: catalog_api
     build:
       context: .
       dockerfile: services/catalog_service/deploy/Dockerfile

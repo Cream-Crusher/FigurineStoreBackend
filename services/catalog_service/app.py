@@ -1,8 +1,8 @@
 import uvicorn
 from fastapi import FastAPI, APIRouter
-from contextlib import asynccontextmanager
-from api.product.model import Product
-from api.product.router import router as catalog_router
+
+from services.catalog_service.api.product.model import Product
+from services.catalog_service.api.product.router import router as catalog_router
 from starlette.middleware.cors import CORSMiddleware
 
 

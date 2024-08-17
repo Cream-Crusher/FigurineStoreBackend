@@ -4,7 +4,9 @@ from pydantic_settings import BaseSettings
 from dotenv import load_dotenv
 
 dev = True
-env_file = "deploy/env/dev.env" if dev else "deploy/env/prod.env"
+deploy_path = 'services/catalog_service/deploy/env/'
+env_file = f"{deploy_path}dev.env" if dev else f"{deploy_path}prod.env"
+
 load_dotenv(env_file)
 
 

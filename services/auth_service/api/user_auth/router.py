@@ -32,7 +32,6 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), users=user_ser
     if two_factor_authentication:
         user_id = data.get('user_id')
         data = await users.get_data_for_two_factor_authentication(user_id)
-
         await RedisRep.create(f'login_attempts_{user_id}', 0)
         await MQBroker.send_message(routing_key='email', message=data)
 

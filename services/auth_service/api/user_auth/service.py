@@ -150,7 +150,7 @@ class UserService(BaseRepository):
         secret = user.secret
 
         if not await OTP.verify_one_time_password(secret, code):
-            await RedisRep.update(f'login_attempts_{user_id}', login_attempts+1)
+            await RedisRep.update(f'login_attempts_{user_id}', int(login_attempts)+1)
             raise HTTPException(status_code=403, detail="Code is invalid")
 
         return True

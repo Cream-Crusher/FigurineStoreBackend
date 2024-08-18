@@ -6,3 +6,4 @@ class Product(Document):
     price: str
     description: str
     size: str
+    image_file: str

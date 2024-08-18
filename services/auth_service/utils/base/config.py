@@ -73,7 +73,7 @@ class RabbitMQSettings(BaseSettings):
         return f"amqp://{self.user}:{self.password}@{self.host}/"  # {self.port}
 
 
-class RadisSettings(BaseSettings):
+class RedisSettings(BaseSettings):
     host: str
     password: str
     port: str
@@ -87,7 +87,7 @@ class AppSettings(BaseModel):
     api: APISettings = APISettings()
     OAuth2: OAuth2Settings = OAuth2Settings()
     rabbit_mq: RabbitMQSettings = RabbitMQSettings()
-    radis: RadisSettings = RadisSettings()
+    redis: RedisSettings = RedisSettings()
 
 
 settings = AppSettings()

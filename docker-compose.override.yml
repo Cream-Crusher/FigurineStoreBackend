@@ -3,6 +3,8 @@ services:
   redis:
     ports:
       - "6379:6379"
+    networks:
+      - traefik-proxy
     volumes:
       - redis_data:/data
 
@@ -65,7 +67,9 @@ services:
       - POSTGRES_HOST=authdb
       - POSTGRES_PORT=5432
       - RABBITMQ_HOST=rabbitmq
+      - REDIS_HOST=redis
     depends_on:
+      - redis
       - authdb
       - rabbitmq
     ports:

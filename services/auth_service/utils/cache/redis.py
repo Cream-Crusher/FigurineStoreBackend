@@ -9,7 +9,7 @@ from services.auth_service.utils.base.config import settings
 
 class RedisRepository:
     def __init__(self):
-        setting = settings.radis
+        setting = settings.redis
         self.expire = 300
         self.redis = redis.Redis(
             host=setting.host,

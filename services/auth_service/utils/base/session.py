@@ -17,16 +17,7 @@ class AsyncDatabaseSessions:
             port=db.port,
             database=db.db,
         )
-        # self.URL = SQURL.URL.create(
-        #     drivername="postgresql+asyncpg",
-        #     username=db.user,
-        #     password=db.password,
-        #     host='authdb',
-        #     port=5432,
-        #     database=db.db,
-        # )
 
-        print(self.URL)
         self.engine = create_async_engine(self.URL, pool_size=50, max_overflow=-1, pool_pre_ping=True)
         self.factory = async_sessionmaker(self.engine, class_=AsyncSession, expire_on_commit=False)
 

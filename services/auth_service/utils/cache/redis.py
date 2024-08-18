@@ -39,6 +39,13 @@ class RedisRepository:
         except Exception as error:
             raise HTTPException(status_code=400, detail=str(error))
 
+    async def get(self, key: str) -> any:
+        try:
+            data = self.redis.get(key)
+            return data
+        except Exception as error:
+            raise HTTPException(status_code=400, detail=str(error))
+
     async def update(self, key: str, value: any, expire: int = None) -> bool:
         try:
             await self.is_key_exit(key)
@@ -46,13 +53,6 @@ class RedisRepository:
             expire = expire if expire else self.expire
             self.redis.set(key, value, expire)
             return True
-        except Exception as error:
-            raise HTTPException(status_code=400, detail=str(error))
-
-    async def get(self, key: str) -> any:
-        try:
-            data = self.redis.get(key)
-            return data
         except Exception as error:
             raise HTTPException(status_code=400, detail=str(error))
 

@@ -13,12 +13,12 @@ class BasketItem(BaseModel):
 
 class Basket(BaseModel):
     user_id: str
-    items: List[BasketItem]
+    items: List[BasketItem] = []
 
-    total_price: Optional[float]
-    address_line: Optional[str]
-    country: Optional[str]
-    zip_code: Optional[str]
+    total_price: float = 0
+    address_line: Optional[str] = None
+    country: Optional[str] = None
+    zip_code: Optional[str] = None
 
     class Config:
         from_attributes = True

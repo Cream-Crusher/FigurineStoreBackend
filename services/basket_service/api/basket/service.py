@@ -8,7 +8,7 @@ class BasketService(RedisRepository):
     model = Basket
 
     async def create_busket(self, user_id):
-        busket = await self.model(user_id=user_id)
+        busket = self.model(user_id=user_id)
         await self.create(user_id, busket)
 
     async def update_item(self, user_id: str, item_id: str) -> 201:
@@ -17,13 +17,29 @@ class BasketService(RedisRepository):
 
         basket = await self.get(user_id)
 
-        item = next(
-            (item for item in basket.items if item.item_id == item_id),
-            BasketItem(item_id=user_id, quantity=0)
-        )
+        item = next((item for item in basket.items if item.item_id == item_id), None)
+
+        if item is None:
+            item = BasketItem(item_id=item_id, quantity=0)
+            basket.items.append(item)
+
         item.quantity += 1
 
         await self.create(user_id, basket)
+
+        return 201
+
+    async def del_item(self, user_id: str, item_id: str):
+        basket = await self.get(user_id)
+
+        item = next(
+            (item for item in basket.items if item.item_id == item_id),
+            None
+        )
+
+        if item:
+            basket.items.remove(item)
+            await self.create(user_id, basket)
 
         return 201
 

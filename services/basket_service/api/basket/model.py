@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 
 from pydantic import BaseModel
 
@@ -8,17 +8,17 @@ class BasketItem(BaseModel):
     quantity: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class Basket(BaseModel):
     user_id: str
-    items: List[BasketItem] = []
+    items: List[BasketItem]
 
-    total_price: float = 0
-    address_line: str = None
-    country: str = None
-    zip_code: str = None
+    total_price: Optional[float]
+    address_line: Optional[str]
+    country: Optional[str]
+    zip_code: Optional[str]
 
     class Config:
-        orm_mode = True
+        from_attributes = True

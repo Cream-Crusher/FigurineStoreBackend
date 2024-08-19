@@ -3,7 +3,7 @@ from fastapi import APIRouter, HTTPException
 from services.basket_service.api.basket.schema import UpdateItem
 from services.basket_service.api.basket.service import basket_service
 
-router = APIRouter(prefix='/auth', tags=['User|Authentication'])
+router = APIRouter(prefix='/basket', tags=['Baskets|basket'])
 
 
 @router.post('/add_item', name='Add item for basket', status_code=201)

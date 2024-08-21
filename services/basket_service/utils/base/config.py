@@ -48,10 +48,18 @@ class RedisSettings(BaseSettings):
         env_prefix = "REDIS_"
 
 
+class BaseServiceURL(BaseSettings):
+    catalog: str
+
+    class Config:
+        env_prefix = "BASE_URL_"
+
+
 class AppSettings(BaseModel):
     api: APISettings = APISettings()
     rabbit_mq: RabbitMQSettings = RabbitMQSettings()
     redis: RedisSettings = RedisSettings()
+    base_service_url: BaseServiceURL = BaseServiceURL()
 
 
 settings = AppSettings()

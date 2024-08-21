@@ -2,6 +2,7 @@ from fastapi import Depends, HTTPException
 
 from services.basket_service.utils.cache.redis import RedisRepository
 from services.basket_service.api.basket.model import Basket, BasketItem
+from services.basket_service.utils.integration.catalog import catalog_api
 
 
 class BasketService(RedisRepository):
@@ -52,6 +53,16 @@ class BasketService(RedisRepository):
         await self.create(user_id, basket)
 
         return 201
+
+    async def get_total_price(self, basket: model) -> model:
+        # todo кешировать полученные продукты
+        # расчитывать финальную стоимость
+        product_id = 1
+        catalog_api.get(product_id)
+
+        basket.total_price = 0
+
+        return basket
 
 
 async def get_basket_service():

@@ -8,7 +8,11 @@ router = APIRouter(prefix='/basket', tags=['Baskets|basket'])
 
 @router.get('/get_basket_by_user_id', name='Add item for basket', response_model=BasketRead, status_code=201)
 async def add_item(user_id: str, baskets=basket_service):
-    return await baskets.get(user_id)
+    basket = await baskets.get(user_id)
+
+    # todo
+
+    return basket
 
 
 @router.post('/add_item', name='Add item for basket', status_code=201)

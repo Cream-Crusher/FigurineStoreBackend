@@ -1,4 +1,6 @@
-from pydantic import BaseModel
+from typing import Optional
+
+from pydantic import BaseModel, Field
 
 
 class BasketItem(BaseModel):
@@ -8,11 +10,8 @@ class BasketItem(BaseModel):
 
 class BasketRead(BaseModel):
     user_id: str
-    items: list
-    total_price: float
-    address_line: str
-    country: str
-    zip_code: str
+    items: Optional[list]
+    total_price: Optional[float] = 0
 
 
 class UpdateDeliveryAddress(BaseModel):
@@ -21,6 +20,13 @@ class UpdateDeliveryAddress(BaseModel):
     zip_code: str
 
 
-class UpdateItem(BaseModel):
+class AddItem(BaseModel):
     user_id: str
     item_id: str
+    quantity: int = Field(ge=1, lt=99)
+
+
+class DelItem(BaseModel):
+    user_id: str
+    item_id: str
+    quantity: int = Field(ge=1, lt=99)

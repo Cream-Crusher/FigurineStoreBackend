@@ -3,6 +3,7 @@ from fastapi import FastAPI, APIRouter
 from starlette.middleware.cors import CORSMiddleware
 
 from services.basket_service.api.basket.router import router as basket_router
+from services.basket_service.api.delivery_address.router import router as delivery_address_router
 from services.basket_service.utils.base.config import settings
 
 service_title = settings.api.title
@@ -20,7 +21,7 @@ app = FastAPI(
 )
 
 if settings.api.environment == 'prod':
-    origins = ['https://title_company.auth.ru']
+    origins = ['https://title_company.basket.ru']
 
 else:
     origins = ["http://localhost"]
@@ -32,6 +33,7 @@ app.add_middleware(CORSMiddleware, allow_origins=origins, allow_credentials=True
 router = APIRouter(prefix=f'/{service_title}/api/v1', tags=[''])
 
 router.include_router(basket_router)
+router.include_router(delivery_address_router)
 
 
 @router.get("/ping", tags=["Server"])
